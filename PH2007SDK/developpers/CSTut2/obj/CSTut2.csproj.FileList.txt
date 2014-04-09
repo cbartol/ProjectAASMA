@@ -1,0 +1,7 @@
+..\..\players\CSTut2.dll
+..\..\players\CSTut2.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\CSTut2.Properties.Resources.resources
+obj\Release\CSTut2.csproj.GenerateResource.Cache
+obj\Release\CSTut2.dll
+obj\Release\CSTut2.pdb

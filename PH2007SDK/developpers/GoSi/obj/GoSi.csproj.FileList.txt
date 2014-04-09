@@ -1,0 +1,12 @@
+..\..\players\GoSi.dll
+..\..\players\GoSi.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\GoSi.Properties.Resources.resources
+obj\Release\GoSi.csproj.GenerateResource.Cache
+obj\Release\GoSi.dll
+obj\Release\GoSi.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\GoSi.Properties.Resources.resources
+obj\Debug\GoSi.csproj.GenerateResource.Cache
+obj\Debug\GoSi.dll
+obj\Debug\GoSi.pdb

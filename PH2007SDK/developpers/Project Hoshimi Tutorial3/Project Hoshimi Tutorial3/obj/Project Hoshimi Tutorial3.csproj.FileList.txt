@@ -1,0 +1,9 @@
+..\..\..\..\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\players\Project Hoshimi Tutorial3.dll
+..\..\..\..\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\players\Project Hoshimi Tutorial3.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\Project_Hoshimi_Tutorial3.Properties.Resources.resources
+obj\Release\Project Hoshimi Tutorial3.csproj.GenerateResource.Cache
+obj\Release\Project Hoshimi Tutorial3.dll
+obj\Release\Project Hoshimi Tutorial3.pdb
+..\..\..\players\Project Hoshimi Tutorial3.dll
+..\..\..\players\Project Hoshimi Tutorial3.pdb

@@ -1,0 +1,14 @@
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Hoshimi_ClassLibrary.Properties.Resources.resources
+obj\Debug\Hoshimi_ClassLibrary.csproj.GenerateResource.Cache
+bin\Debug\Hoshimi_ClassLibrary.dll
+bin\Debug\Hoshimi_ClassLibrary.pdb
+obj\Debug\Hoshimi_ClassLibrary.dll
+obj\Debug\Hoshimi_ClassLibrary.pdb
+..\..\..\players\Hoshimi_ClassLibrary.dll
+..\..\..\players\Hoshimi_ClassLibrary.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\Hoshimi_ClassLibrary.Properties.Resources.resources
+obj\Release\Hoshimi_ClassLibrary.csproj.GenerateResource.Cache
+obj\Release\Hoshimi_ClassLibrary.dll
+obj\Release\Hoshimi_ClassLibrary.pdb
