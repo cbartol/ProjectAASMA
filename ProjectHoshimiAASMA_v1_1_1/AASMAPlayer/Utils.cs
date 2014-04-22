@@ -280,7 +280,7 @@ namespace AASMAHoshimi
         public static Point randomNeighbour(Point point)
         {
             Point neighbourPoint = point;
-            int randomDirection = Utils._randomFactory.Next(0, 4);
+            int randomDirection = Utils._randomFactory.Next(0, 8);
 
             Point[] directions ={ new Point(1,0),
                                   new Point(1,1),
