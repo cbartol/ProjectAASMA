@@ -91,6 +91,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "C:\Users\CesarPim\Documents\Trabalho\Aulas\aasma2010_11\projecto\fornecido\proj hoshimi\PH2007SDK\players" /y</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\PH2007SDK\players" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>
