@@ -70,6 +70,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Reactive\ReactiveAI.cs" />
+    <Compile Include="Reactive\ReactiveCollector.cs" />
+    <Compile Include="Reactive\ReactiveExplorer.cs" />
+    <Compile Include="Reactive\ReactiveProtector.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
