@@ -1,0 +1,1 @@
+Extract PH2007SDK.zip here before building the AASMA project

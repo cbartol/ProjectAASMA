@@ -1,9 +1,0 @@
-name = 'Decor4'
-groups = {
-{
-  fx = 'PointDecorCell', pri = 1,
-  params = {
-	  { 'tex', 'tBase', 'DecorEnv' },
-  },
-},
-}

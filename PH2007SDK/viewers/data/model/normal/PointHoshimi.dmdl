@@ -1,8 +1,0 @@
-name = 'PointHoshimi'
-groups = {
-{
-  fx = 'Point', pri = 1,
-  params = {
-  },
-},
-}

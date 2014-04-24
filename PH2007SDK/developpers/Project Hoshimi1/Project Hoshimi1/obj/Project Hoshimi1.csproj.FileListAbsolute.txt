@@ -1,7 +1,0 @@
-C:\Documents and Settings\Paulo\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\players\Project Hoshimi1XP.dll
-C:\Documents and Settings\Paulo\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\players\Project Hoshimi1XP.pdb
-C:\Documents and Settings\Paulo\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\developpers\Project Hoshimi1\Project Hoshimi1\obj\Release\ResolveAssemblyReference.cache
-C:\Documents and Settings\Paulo\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\developpers\Project Hoshimi1\Project Hoshimi1\obj\Release\Project_Hoshimi1.Properties.Resources.resources
-C:\Documents and Settings\Paulo\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\developpers\Project Hoshimi1\Project Hoshimi1\obj\Release\Project Hoshimi1.csproj.GenerateResource.Cache
-C:\Documents and Settings\Paulo\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\developpers\Project Hoshimi1\Project Hoshimi1\obj\Release\Project Hoshimi1XP.dll
-C:\Documents and Settings\Paulo\My Documents\Universidade\0_Extra\Extracurriculares\PH2007SDK\developpers\Project Hoshimi1\Project Hoshimi1\obj\Release\Project Hoshimi1XP.pdb

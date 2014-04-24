@@ -1,9 +1,0 @@
-name = 'PContainer'
-groups = {
-{
-  fx = 'entity', pri = 0,
-  params = {
-	  { 'tex', 'tBase', 'PContainer' },
-  },
-},
-}

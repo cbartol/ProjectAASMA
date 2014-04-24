@@ -1,7 +1,0 @@
-..\..\..\players\Project Hoshimi1.dll
-..\..\..\players\Project Hoshimi1.pdb
-obj\Release\ResolveAssemblyReference.cache
-obj\Release\Project_Hoshimi1.Properties.Resources.resources
-obj\Release\Project Hoshimi1.csproj.GenerateResource.Cache
-obj\Release\Project Hoshimi1.dll
-obj\Release\Project Hoshimi1.pdb

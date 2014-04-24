@@ -1,9 +1,2 @@
-#ignored Hoshimi program
+#ignoring Hoshimi program
 PH2007SDK/
-PH2007SDK/*/*
-PH2007SDK/*/*/*
-PH2007SDK/*/*/*/*
-PH2007SDK/*/*/*/*/*
-PH2007SDK/*/*/*/*/*/*
-PH2007SDK/*/*/*/*/*/*/*
-PH2007SDK/*/*/*/*/*/*/*/*

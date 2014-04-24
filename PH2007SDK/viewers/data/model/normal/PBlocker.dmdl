@@ -1,9 +1,0 @@
-name = 'PBlocker'
-groups = {
-{
-  fx = 'entity', pri = 0,
-  params = {
-	  { 'tex', 'tBase', 'PBlocker' },
-  },
-},
-}

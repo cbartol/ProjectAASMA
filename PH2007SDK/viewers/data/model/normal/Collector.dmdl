@@ -1,9 +1,0 @@
-name = 'Collector'
-groups = {
-{
-  fx = 'entity', pri = 0,
-  params = {
-	  { 'tex', 'tBase', 'NanoCollector' },
-  },
-},
-}

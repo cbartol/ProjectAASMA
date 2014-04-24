@@ -1,8 +1,0 @@
-name = 'PointMission'
-groups = {
-{
-  fx = 'Point', pri = 1,
-  params = {
-  },
-},
-}

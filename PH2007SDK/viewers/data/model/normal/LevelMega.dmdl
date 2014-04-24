@@ -1,9 +1,0 @@
-name = 'LevelMega'
-groups = {
-{
-  fx = 'levelMega', pri = 0,
-  params = {
-	  { 'tex', 'tBase', 'WallsGray' },
-  },
-},
-}
