@@ -13,8 +13,47 @@ namespace AASMAHoshimi.Reactive
             this._nanoAI = nano;
         }
 
+        public void MoveToClearPosition()
+        {
+            /*
+            int x, y;
+            do 
+            {
+            int angle = Utils.randomValue(360);
+            x = 5*(int)Math.Cos(Math.PI*angle/180);
+            y = 5*(int)Math.Sin(Math.PI*angle/180);
+            }
+            while(!getAASMAFramework().isMovablePoint(new System.Drawing.Point(x, y)));
+            this._nanoAI.MoveTo(new System.Drawing.Point(x, y));
+            */
+            if (frontClear())
+            {
+                if(Utils.randomValue(100) < 90)
+                {
+                    this.MoveForward();
+                }
+                else 
+                {
+                    this.RandomTurn();
+                }
+            }
+            else
+            {
+                this.RandomTurn();
+            }
+        }
+
+
         public override void DoActions()
         {
+            /*
+            if (getAASMAFramework().visiblePierres(this._nanoAI).Count != 0)
+            {
+                System.Drawing.Point nearestPierre = Utils.getNearestPoint(this._nanoAI.Location, getAASMAFramework().visiblePierres(this._nanoAI));
+                TurnToOppositeDirection(nearestPierre);
+                MoveToClearPosition();
+            }
+            */
             if (getAASMAFramework().protectorsAlive() < 5)
             {
                 this._nanoAI.Build(typeof(ReactiveProtector),"P"+this._protectorNumber++);
@@ -39,11 +78,12 @@ namespace AASMAHoshimi.Reactive
                         return;
                     }
                 }
-                if (frontClear()) {
+                /*if (frontClear()) {
                     this.MoveForward();
                 } else {
                     this.RandomTurn();
-                }
+                }*/
+                MoveToClearPosition();
             }
             else if (getAASMAFramework().overHoshimiPoint(this._nanoAI) && (!getAASMAFramework().overNeedle(this._nanoAI)))
             {
