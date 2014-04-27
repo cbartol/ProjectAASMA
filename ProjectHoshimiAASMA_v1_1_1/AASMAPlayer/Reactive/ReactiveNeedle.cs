@@ -11,6 +11,12 @@ namespace AASMAHoshimi.Reactive
     {
         public override void receiveMessage(AASMAMessage msg) {}
 
-        public override void DoActions() {}
+        public override void DoActions() {
+            List<System.Drawing.Point> visiblePierresList = getAASMAFramework().visiblePierres(this);
+            if (visiblePierresList.Count != 0)
+            {
+                this.DefendTo(visiblePierresList[0], 2);
+            }
+        }
     }
 }
