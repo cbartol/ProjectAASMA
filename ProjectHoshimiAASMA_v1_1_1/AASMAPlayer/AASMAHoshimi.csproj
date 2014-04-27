@@ -71,8 +71,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Reactive\ReactiveAI.cs" />
-    <Compile Include="Reactive\ReactiveCollector.cs" />
+    <Compile Include="Reactive\ReactiveContainer.cs" />
     <Compile Include="Reactive\ReactiveExplorer.cs" />
+    <Compile Include="Reactive\ReactiveNeedle.cs" />
     <Compile Include="Reactive\ReactiveProtector.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
