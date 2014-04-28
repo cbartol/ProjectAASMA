@@ -12,11 +12,14 @@ namespace AASMAHoshimi.Reactive {
             List<Point> enemies = getAASMAFramework().visiblePierres(this);
             Point enemyPosition;
             if (enemies.Count > 0) {
-                enemyPosition = enemies[0];
-                this.DefendTo(enemyPosition, 1);
+                enemyPosition = Utils.getNearestPoint(this.Location, enemies);
+                if(Utils.SquareDistance(this.Location, enemyPosition) <= this.DefenseDistance*this.DefenceDistance) {
+                    this.DefendTo(enemyPosition, 1);
+                    return;
+                }
             }
             if (frontClear()) {
-                if (Utils.randomValue(100) < 80) {
+                if (Utils.randomValue(100) < 95) {
                     this.MoveForward();
                 } else {
                     this.RandomTurn();

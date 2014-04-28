@@ -11,13 +11,12 @@ namespace AASMAHoshimi.Reactive {
 
 
         public override void DoActions() {
-            List<Point> enemies = getAASMAFramework().visiblePierres(this);
-            if (enemies.Count > 0) {
-                flee(enemies);
-            }
-            if (frontClear()) {
+            List<Point> objectivePoints = getAASMAFramework().visibleNavigationPoints(this);
+            if(objectivePoints.Count > 0){
+                this.MoveTo(Utils.randomPoint(objectivePoints));
+            } else if (frontClear()) {
                 int rand = Utils.randomValue(100);
-                if (rand < 80) {
+                if (rand < 95) {
                     this.MoveForward();
                 } else {
                     this.RandomTurn();
@@ -29,14 +28,6 @@ namespace AASMAHoshimi.Reactive {
 
         public override void receiveMessage(AASMAMessage msg) {
             getAASMAFramework().logData(this, "received message from " + msg.Sender + " : " + msg.Content);
-        }
-
-        private void flee(List<Point> enemies) {
-            List<Point> possibleMoves = new List<Point>();
-            foreach (Point enemy in enemies) {
-                possibleMoves.Add(Utils.oppositDirection(this.Location, enemy, getAASMAFramework().Tissue));
-            }
-            this.MoveTo(Utils.getMiddlePoint(possibleMoves.ToArray()));
         }
     }
 }

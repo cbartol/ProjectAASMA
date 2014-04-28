@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using AASMAHoshimi;
 using PH.Common;
+using System.Drawing;
 
 namespace AASMAHoshimi.Reactive
 {
@@ -46,15 +47,14 @@ namespace AASMAHoshimi.Reactive
 
         public override void DoActions()
         {
-            /*
+            
             if (getAASMAFramework().visiblePierres(this._nanoAI).Count != 0)
             {
-                System.Drawing.Point nearestPierre = Utils.getNearestPoint(this._nanoAI.Location, getAASMAFramework().visiblePierres(this._nanoAI));
-                TurnToOppositeDirection(nearestPierre);
-                MoveToClearPosition();
+                List<Point> enemies = getAASMAFramework().visiblePierres(this._nanoAI);
+                flee(enemies);
             }
-            */
-            if (getAASMAFramework().protectorsAlive() < 5)
+            
+            else  if (getAASMAFramework().protectorsAlive() < 5)
             {
                 this._nanoAI.Build(typeof(ReactiveProtector),"P"+this._protectorNumber++);
             }
@@ -93,6 +93,14 @@ namespace AASMAHoshimi.Reactive
 
         public override void receiveMessage(AASMAMessage msg)
         {
+        }
+
+        private void flee(List<Point> enemies) {
+            List<Point> possibleMoves = new List<Point>();
+            foreach(Point enemy in enemies) {
+                possibleMoves.Add(Utils.oppositDirection(this._nanoAI.Location, enemy, getAASMAFramework().Tissue));
+            }
+            this._nanoAI.MoveTo(Utils.getMiddlePoint(possibleMoves.ToArray()));
         }
     }
 }
