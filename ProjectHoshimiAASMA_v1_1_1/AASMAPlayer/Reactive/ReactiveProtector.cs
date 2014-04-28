@@ -13,8 +13,8 @@ namespace AASMAHoshimi.Reactive {
             Point enemyPosition;
             if (enemies.Count > 0) {
                 enemyPosition = Utils.getNearestPoint(this.Location, enemies);
-                if(Utils.SquareDistance(this.Location, enemyPosition) <= this.DefenseDistance*this.DefenceDistance) {
-                    this.DefendTo(enemyPosition, 1);
+                if (Utils.SquareDistance(this.Location, enemyPosition) <= this.DefenseDistance * this.DefenseDistance) {
+                    this.DefendTo(enemyPosition, 10);
                     return;
                 }
             }
