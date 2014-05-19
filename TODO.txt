@@ -1,0 +1,60 @@
+Agentes:
+AI
+Container
+Explorer
+Needle
+Protector
+
+TODO:
+--------------------------
+1. Agentes Reactivos:
+Explorador:
+Quando vir um Hoshimi Point, com pequena probabilidade pode mover-se aleatoriamente.
+
+Protector:
+O protector actual anda a procura dos maus e mata. Deve ser feita uma versão que
+protege a AI.
+
+AI:
+Andar para a frente melhor melhor.
+
+Container:
+Possivelmente andar na direcção oposta ao inimigo.
+
+---------------------------
+2. Agentes Deliberativos:
+Intenções
+Desejos
+Planos
+
+Exploradores:
+	Desejo: Visitar os Hoshimi Points que estão nos objectivos onde eles ganham pontos
+	se os visitarem. Após terem visitado estes pontos, ficam em modo kamikaze (ficam perto
+	dos Pierres).
+
+Protectores:
+	Algoritmo: Defender AI; Atacar Inimigos.
+	Desejo: Destruir os inimigos visíveis. Quando não os vê, seguir AI.
+
+AI:
+	Algoritmo: Lembra-se onde deixou needles. De vez em quando pode ir ver se ainda
+	estão vivas.
+	Desejo: Sobreviver. Criar o máximo de agentes.
+	[Opcional] Inventar algoritmo de criação de Agentes.
+
+Container:
+	Desejos: Descobrir AZN Points; Encher container; Guardar sitios onde podem
+ser criadas needles; Guardar localização das needles; Guardo informação sobre a
+needle estar cheia; Guarda posições dos AZN Points.
+
+Needles:
+	Algoritmo: Defender-se
+	Desejo: Sobreviver
+	Intenção:
+
+3. Agentes Hibridos:
+
+4. Agentes Hibridos + Comunicação:
+
+Perguntas para o prof:
+- É possível saber o número de AZN Points a visitar?
