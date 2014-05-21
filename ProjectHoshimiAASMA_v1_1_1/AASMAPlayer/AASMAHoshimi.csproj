@@ -74,6 +74,7 @@
     <Compile Include="Reactive\ReactiveExplorer.cs" />
     <Compile Include="Reactive\ReactiveNeedle.cs" />
     <Compile Include="Reactive\ReactiveProtector.cs" />
+    <Compile Include="Reactive\ReactiveProtectorAI.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Deliberative\DeliberativeAI.cs" />
     <Compile Include="Deliberative\DeliberativeNeedle.cs" />
