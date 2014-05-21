@@ -1,2 +1,4 @@
 #ignoring Hoshimi program
 PH2007SDK/
+.DS_STORE
+*.userprefs

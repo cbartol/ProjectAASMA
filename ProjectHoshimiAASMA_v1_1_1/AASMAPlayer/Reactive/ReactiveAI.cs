@@ -16,27 +16,10 @@ namespace AASMAHoshimi.Reactive
 
         public void MoveToClearPosition()
         {
-            /*
-            int x, y;
-            do 
+			Boolean tryMoveForward = Utils.randomValue(100) < 90;
+			if (frontClearDepth(4) && tryMoveForward)
             {
-            int angle = Utils.randomValue(360);
-            x = 5*(int)Math.Cos(Math.PI*angle/180);
-            y = 5*(int)Math.Sin(Math.PI*angle/180);
-            }
-            while(!getAASMAFramework().isMovablePoint(new System.Drawing.Point(x, y)));
-            this._nanoAI.MoveTo(new System.Drawing.Point(x, y));
-            */
-            if (frontClear())
-            {
-                if(Utils.randomValue(100) < 90)
-                {
-                    this.MoveForward();
-                }
-                else 
-                {
-                    this.RandomTurn();
-                }
+				this.MoveForward();
             }
             else
             {
@@ -53,7 +36,6 @@ namespace AASMAHoshimi.Reactive
                 List<Point> enemies = getAASMAFramework().visiblePierres(this._nanoAI);
                 flee(enemies);
             }
-            
             else  if (getAASMAFramework().protectorsAlive() < 5)
             {
                 this._nanoAI.Build(typeof(ReactiveProtector),"P"+this._protectorNumber++);
@@ -69,7 +51,7 @@ namespace AASMAHoshimi.Reactive
             else if(!getAASMAFramework().overHoshimiPoint(this._nanoAI) || getAASMAFramework().overNeedle(this._nanoAI)) 
             {
                 List<System.Drawing.Point> visibleHoshimiesList = getAASMAFramework().visibleHoshimies(this._nanoAI);
-                if(visibleHoshimiesList.Count != 0) {
+				if (visibleHoshimiesList.Count != 0) {
                     System.Drawing.Point nearestHoshimi = Utils.getNearestPoint(this._nanoAI.Location, visibleHoshimiesList);
                     if (!getAASMAFramework().visibleEmptyNeedles(this._nanoAI).Contains(nearestHoshimi) &&
                         !getAASMAFramework().visibleFullNeedles(this._nanoAI).Contains(nearestHoshimi))
@@ -78,11 +60,6 @@ namespace AASMAHoshimi.Reactive
                         return;
                     }
                 }
-                /*if (frontClear()) {
-                    this.MoveForward();
-                } else {
-                    this.RandomTurn();
-                }*/
                 MoveToClearPosition();
             }
             else if (getAASMAFramework().overHoshimiPoint(this._nanoAI) && (!getAASMAFramework().overNeedle(this._nanoAI)))

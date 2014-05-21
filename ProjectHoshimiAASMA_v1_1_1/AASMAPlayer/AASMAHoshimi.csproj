@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C1995BDF-2AE4-4F2E-B8DE-C924473466A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -35,18 +33,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PH.Common, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\PH2007SDK\PH.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="PH.Map, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\PH2007SDK\PH.Map.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+    <Reference Include="PH.Common">
+      <HintPath>..\..\PH2007SDK\PH.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="PH.Map">
+      <HintPath>..\..\PH2007SDK\PH.Map.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AASMAMessage.cs" />
@@ -76,6 +72,8 @@
     <Compile Include="Reactive\ReactiveNeedle.cs" />
     <Compile Include="Reactive\ReactiveProtector.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="Deliberative\DeliberativeAI.cs" />
+    <Compile Include="Deliberative\DeliberativeNeedle.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -98,4 +96,7 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\PH2007SDK\players" /y</PostBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Deliberative\" />
+  </ItemGroup>
 </Project>

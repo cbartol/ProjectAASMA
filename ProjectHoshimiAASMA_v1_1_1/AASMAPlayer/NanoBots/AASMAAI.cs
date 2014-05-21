@@ -50,6 +50,16 @@ namespace AASMAHoshimi
             return Utils.isPointOK(_nanoAI.PlayerOwner.Tissue, p.X, p.Y);
         }
 
+		public Boolean frontClearDepth(int depth) {
+			Boolean frontClear = true;
+			Point p = _nanoAI.Location;
+			for (int i = 1; i < depth; i++) {
+				p = Utils.getPointInFront(p, this._direction);
+				frontClear &= Utils.isPointOK(_nanoAI.PlayerOwner.Tissue, p.X, p.Y);
+			}
+			return frontClear;
+		}
+
         public void MoveForward()
         {
             Point p = Utils.getPointInFront(_nanoAI.Location, this._direction);
