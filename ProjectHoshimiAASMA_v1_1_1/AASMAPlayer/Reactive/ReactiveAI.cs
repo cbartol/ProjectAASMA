@@ -10,24 +10,10 @@ namespace AASMAHoshimi.Reactive
     public class ReactiveAI : AASMAAI
     {
         public ReactiveAI(NanoAI nano)
-        {
-            this._nanoAI = nano;
-        }
-
-        public void MoveToClearPosition()
-        {
-			Boolean tryMoveForward = Utils.randomValue(100) < 90;
-			if (frontClearDepth(4) && tryMoveForward)
-            {
-				this.MoveForward();
-            }
-            else
-            {
-                this.RandomTurn();
-            }
-        }
-
-
+		{
+			this._nanoAI = nano;
+		}
+			
         public override void DoActions()
         {
             
@@ -60,7 +46,7 @@ namespace AASMAHoshimi.Reactive
                         return;
                     }
                 }
-                MoveToClearPosition();
+				MoveToClearPosition(90);
             }
             else if (getAASMAFramework().overHoshimiPoint(this._nanoAI) && (!getAASMAFramework().overNeedle(this._nanoAI)))
             {
