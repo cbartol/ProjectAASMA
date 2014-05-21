@@ -19,6 +19,7 @@ namespace AASMAHoshimi.Communicative {
         public override void DoActions() {
             if (exploringPoint == this.Location) {
                 visitedPositions.Add(exploringPoint);
+                broadcastVisitedPoint(exploringPoint);
             }
 
             // get perceptions
@@ -41,7 +42,7 @@ namespace AASMAHoshimi.Communicative {
             // get Intentions
             Point intention = getIntention(desire);
             // do a plan
-            // the plan is move the position returned from getting the intention
+            // the plan is move the position returned from the intention
 
             // execute the plan
             this.MoveTo(intention);
@@ -57,6 +58,10 @@ namespace AASMAHoshimi.Communicative {
         private Point getIntention(Desire desire) {
             switch (desire) {
                 case Desire.EXPLORE:
+                    if (visitedPositions.Contains(exploringPoint)) {
+                        // someone else explored this point
+                        this.StopMoving();
+                    }
                     exploringPoint = Utils.randomPoint(pointsToVisit);
                     pointsToVisit.Remove(exploringPoint);
                     return exploringPoint;
@@ -88,29 +93,39 @@ namespace AASMAHoshimi.Communicative {
 
         private void sendVisiblePointsToOthers(List<Point> nearPierres, List<Point> visibleObjectives, List<Point> visibleHoshimies, List<Point> visibleAZN) {
             foreach(Point p in nearPierres){
-                AASMAMessage message = new AASMAMessage(this.InternalName, "P;" + p.X + ";" + p.Y);
+                AASMAMessage message = new AASMAMessage(this.InternalName, "Pierre;" + p.X + ";" + p.Y);
                 getAASMAFramework().broadCastMessage(message); // or iterate each protector
             }
             foreach (Point p in visibleObjectives) {
-                AASMAMessage message = new AASMAMessage(this.InternalName, "O;" + p.X + ";" + p.Y);
+                AASMAMessage message = new AASMAMessage(this.InternalName, "New objective;" + p.X + ";" + p.Y);
                 getAASMAFramework().broadCastMessage(message); // or iterate each explorer
             }
             foreach (Point p in visibleHoshimies) {
-                AASMAMessage message = new AASMAMessage(this.InternalName, "H;" + p.X + ";" + p.Y);
+                AASMAMessage message = new AASMAMessage(this.InternalName, "Hoshimi;" + p.X + ";" + p.Y);
                 getAASMAFramework().sendMessage(message, "AI");
             }
             foreach (Point p in visibleAZN) {
-                AASMAMessage message = new AASMAMessage(this.InternalName, "A;" + p.X + ";" + p.Y);
+                AASMAMessage message = new AASMAMessage(this.InternalName, "AZN;" + p.X + ";" + p.Y);
                 getAASMAFramework().broadCastMessage(message); // or iterate each Container
             }
         }
 
         public override void receiveMessage(AASMAMessage msg) {
             string[] content = msg.Content.Split(';');
-            if(content.Length == 3 && content[0].Equals("O")){
+            if (content.Length == 3 && content[0].Equals("New objective")) {
                 addObjectiveToVisit(new Point(int.Parse(content[1]), int.Parse(content[2])));
             }
+            else if (content.Length == 3 && content[0].Equals("Visited objective")) {
+                Point p = new Point(int.Parse(content[1]), int.Parse(content[2]));
+                pointsToVisit.Remove(p);
+                visitedPositions.Add(p);
+            }
             // ignore other messages
+        }
+
+        private void broadcastVisitedPoint(Point p) {
+            AASMAMessage message = new AASMAMessage(this.InternalName, "Visited objective;" + p.X + ";" + p.Y);
+            getAASMAFramework().broadCastMessage(message); // or iterate each explorer
         }
     }
 
