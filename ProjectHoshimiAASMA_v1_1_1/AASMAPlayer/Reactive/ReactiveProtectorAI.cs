@@ -11,13 +11,13 @@ namespace AASMAHoshimi.Reactive
     {
         public override void DoActions()
         {
-            List<Point> enemies = getAASMAFramework().visiblePierres(this);
+            List<Point> visibleEnemies = getAASMAFramework().visiblePierres(this);
             Point enemyPosition;
             Point aiPosition = getAASMAFramework().AI.Location;
 
-            if (enemies.Count > 0)
+            if (visibleEnemies.Count > 0)
             {
-                enemyPosition = Utils.getNearestPoint(this.Location, enemies);
+                enemyPosition = Utils.getNearestPoint(this.Location, visibleEnemies);
                 if (Utils.SquareDistance(this.Location, enemyPosition) <= this.DefenseDistance * this.DefenseDistance)
                 {
                     this.DefendTo(enemyPosition, 10);
@@ -25,9 +25,7 @@ namespace AASMAHoshimi.Reactive
                 }
             }
             if (Utils.SquareDistance(this.Location, aiPosition) <= this.Scan) {
-                int x = aiPosition.X + (Utils.randomValue(8) - 4);
-                int y = aiPosition.Y + (Utils.randomValue(8) - 4);
-                this.MoveTo(new Point(x, y));
+                this.MoveTo(aiPosition);
             }
             if (frontClear())
             {

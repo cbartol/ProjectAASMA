@@ -27,6 +27,7 @@ namespace AASMAHoshimi.Reactive
 
             if (getAASMAFramework().visiblePierres(this).Count != 0)
             {
+                this.StopMoving();
                 List<Point> enemies = getAASMAFramework().visiblePierres(this);
                 flee(enemies);
             }
