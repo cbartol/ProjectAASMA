@@ -303,6 +303,16 @@ namespace AASMAHoshimi
             return pointList[randomPointIndex];
         }
 
+        public static Point randomValidPoint(Tissue tissue) {
+            int height = tissue.Height;
+            int width = tissue.Width;
+            Point p = Point.Empty;
+            p.X = Utils._randomFactory.Next(0, width);
+            p.Y = Utils._randomFactory.Next(0, height);
+            p = getValidPoint(tissue, p);
+            return p;
+        }
+
         public static int randomValue(int maximum)
         {
             return Utils._randomFactory.Next(0, maximum + 1);
