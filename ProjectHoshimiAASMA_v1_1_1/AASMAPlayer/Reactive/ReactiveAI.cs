@@ -32,6 +32,7 @@ namespace AASMAHoshimi.Reactive
             
             if (getAASMAFramework().visiblePierres(this._nanoAI).Count != 0)
             {
+                this._nanoAI.StopMoving();
                 List<Point> enemies = getAASMAFramework().visiblePierres(this._nanoAI);
                 flee(enemies);
             }
