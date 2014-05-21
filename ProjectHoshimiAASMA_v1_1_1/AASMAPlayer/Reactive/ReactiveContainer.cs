@@ -10,10 +10,26 @@ namespace AASMAHoshimi.Reactive
     [Characteristics(ContainerCapacity = 20, CollectTransfertSpeed = 5, Scan = 0, MaxDamage = 0, DefenseDistance = 0, Constitution = 20)]
     public class ReactiveCollector : AASMAContainer
     {
+        private void flee(List<Point> enemies)
+        {
+            List<Point> possibleMoves = new List<Point>();
+            foreach (Point enemy in enemies)
+            {
+                possibleMoves.Add(Utils.oppositDirection(this.Location, enemy, getAASMAFramework().Tissue));
+            }
+            this.MoveTo(Utils.getMiddlePoint(possibleMoves.ToArray()));
+        }
+
         public override void DoActions()
         {
             List<Point> visibleAZN = getAASMAFramework().visibleAznPoints(this);
             List<Point> visibleEmptyNeedle = getAASMAFramework().visibleEmptyNeedles(this);
+
+            if (getAASMAFramework().visiblePierres(this).Count != 0)
+            {
+                List<Point> enemies = getAASMAFramework().visiblePierres(this);
+                flee(enemies);
+            }
 
             if (Stock < ContainerCapacity && this.getAASMAFramework().overAZN(this))
             {

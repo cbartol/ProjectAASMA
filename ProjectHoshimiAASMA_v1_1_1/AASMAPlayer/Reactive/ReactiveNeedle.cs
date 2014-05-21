@@ -15,7 +15,7 @@ namespace AASMAHoshimi.Reactive
             List<System.Drawing.Point> visiblePierresList = getAASMAFramework().visiblePierres(this);
             if (visiblePierresList.Count != 0)
             {
-                this.DefendTo(visiblePierresList[0], 2);
+                this.DefendTo(visiblePierresList[0], 10);
             }
         }
     }
