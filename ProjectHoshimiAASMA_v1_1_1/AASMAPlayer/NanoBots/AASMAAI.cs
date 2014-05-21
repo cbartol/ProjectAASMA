@@ -15,6 +15,7 @@ namespace AASMAHoshimi
         protected PH.Common.NanoAI _nanoAI;
 
         protected int _protectorNumber = 1;
+        protected int _protectorAiNumber = 1;
         protected int _explorerNumber = 1;
         protected int _needleNumber = 1;
         protected int _containerNumber = 1;

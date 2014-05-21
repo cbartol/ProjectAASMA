@@ -27,7 +27,6 @@ namespace AASMAHoshimi.Reactive
             }
         }
 
-
         public override void DoActions()
         {
             
@@ -36,22 +35,27 @@ namespace AASMAHoshimi.Reactive
                 List<Point> enemies = getAASMAFramework().visiblePierres(this._nanoAI);
                 flee(enemies);
             }
-            else  if (getAASMAFramework().protectorsAlive() < 5)
+            else if (this._protectorAiNumber < 8)
             {
-                this._nanoAI.Build(typeof(ReactiveProtector),"P"+this._protectorNumber++);
+                this._nanoAI.Build(typeof(ReactiveProtectorAI), "P-AI" + this._protectorAiNumber++);
             }
-            else if (getAASMAFramework().containersAlive() < 5)
+            else if (getAASMAFramework().protectorsAlive() < 10)
             {
-                this._nanoAI.Build(typeof(ReactiveCollector), "C" + this._containerNumber++);
+                this._nanoAI.Build(typeof(ReactiveProtector), "P"+this._protectorNumber++);
             }
-            else if(getAASMAFramework().explorersAlive() < 5)
+            else if (getAASMAFramework().containersAlive() < 10)
             {
-                this._nanoAI.Build(typeof(ReactiveExplorer),"E"+this._explorerNumber++);
+                this._nanoAI.Build(typeof(ReactiveCollector), "C"+this._containerNumber++);
             }
-            else if(!getAASMAFramework().overHoshimiPoint(this._nanoAI) || getAASMAFramework().overNeedle(this._nanoAI)) 
+            else if (getAASMAFramework().explorersAlive() < 10)
+            {
+                this._nanoAI.Build(typeof(ReactiveExplorer), "E"+this._explorerNumber++);
+            }
+            else if (!getAASMAFramework().overHoshimiPoint(this._nanoAI) || getAASMAFramework().overNeedle(this._nanoAI))
             {
                 List<System.Drawing.Point> visibleHoshimiesList = getAASMAFramework().visibleHoshimies(this._nanoAI);
-				if (visibleHoshimiesList.Count != 0) {
+                if (visibleHoshimiesList.Count != 0)
+                {
                     System.Drawing.Point nearestHoshimi = Utils.getNearestPoint(this._nanoAI.Location, visibleHoshimiesList);
                     if (!getAASMAFramework().visibleEmptyNeedles(this._nanoAI).Contains(nearestHoshimi) &&
                         !getAASMAFramework().visibleFullNeedles(this._nanoAI).Contains(nearestHoshimi))
