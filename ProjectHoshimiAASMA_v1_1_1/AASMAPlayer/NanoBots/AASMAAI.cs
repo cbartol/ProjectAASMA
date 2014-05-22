@@ -44,14 +44,14 @@ namespace AASMAHoshimi
             return (AASMAPlayer)this._nanoAI.PlayerOwner;
         }
 
-        public Boolean frontClear()
+		public bool frontClear()
         {
             Point p = Utils.getPointInFront(_nanoAI.Location, this._direction);
             return Utils.isPointOK(_nanoAI.PlayerOwner.Tissue, p.X, p.Y);
         }
 
-		public Boolean frontClearDepth(int depth) {
-			Boolean frontClear = true;
+		public bool frontClearDepth(int depth) {
+			bool frontClear = true;
 			Point p = _nanoAI.Location;
 			for (int i = 1; i < depth; i++) {
 				p = Utils.getPointInFront(p, this._direction);
@@ -93,7 +93,7 @@ namespace AASMAHoshimi
 		 */
 		public void MoveToClearPosition(int successMoveForward)
 		{
-			Boolean tryMoveForward = Utils.randomValue(100) < successMoveForward;
+			bool tryMoveForward = Utils.randomValue(100) < successMoveForward;
 			if (frontClearDepth(4) && tryMoveForward)
 			{
 				this.MoveForward();
@@ -101,6 +101,17 @@ namespace AASMAHoshimi
 			else
 			{
 				this.RandomTurn();
+			}
+		}
+
+		public Point ClearPoint(int successMoveForward) 
+		{
+			bool tryMoveForward = Utils.randomValue(100) < successMoveForward;
+			if (frontClearDepth (4) && tryMoveForward) {
+				return Utils.getPointInFront (this._nanoAI.Location, _direction);
+			} else {
+				this.RandomTurn (); 
+				return Utils.getPointInFront (this._nanoAI.Location, _direction);
 			}
 		}
     }

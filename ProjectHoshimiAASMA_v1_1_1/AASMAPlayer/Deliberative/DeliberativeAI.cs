@@ -9,7 +9,7 @@ namespace AASMAHoshimi.Deliberative
 {
 	public class DeliberativeAI : AASMAAI
 	{
-		private List<Point> viewedHoshimies;
+		private List<Point> emptyNeedles;
 		private List<Point> createdNeedles;
 		private List<Point> viewedEnemies;
 		private List<Action> plan;
@@ -18,16 +18,9 @@ namespace AASMAHoshimi.Deliberative
 		public DeliberativeAI(NanoAI nano)
 		{
 			this._nanoAI = nano;
-			this.viewedHoshimies = new List<Point>();
+			this.emptyNeedles = new List<Point>();
 			this.createdNeedles = new List<Point>();
-		}
-
-		public override void onAgentCreated (Type agentType)
-		{
-			if (Type.Equals (typeof(DeliberativeNeedle))) 
-			{
-				this.createdNeedles.Add (this._nanoAI.Location);
-			}
+			this.plan = new List<Action> ();
 		}
 
 		public override void DoActions()
@@ -35,7 +28,7 @@ namespace AASMAHoshimi.Deliberative
 			// get perceptions
 			updatePerceptions ();
 
-			if (plan == null) {
+			if (plan.Count == 0) {
 				// get desires
 				Intention[] desires = Options ();
 
@@ -50,7 +43,10 @@ namespace AASMAHoshimi.Deliberative
 
 				Action action = this.plan [0];
 				action.execute ();
-				this.plan.RemoveAt (0);
+				// Only remove action when it has finished
+				if (this._nanoAI.State == NanoBotState.WaitingOrders) {
+					this.plan.RemoveAt (0);
+				}
 
 				updatePerceptions ();
 				if (Reconsider ()) {
@@ -69,15 +65,15 @@ namespace AASMAHoshimi.Deliberative
 
 		private void updatePerceptions() {
 			// update list of viewed hoshimies
-			List<Point> visibleHoshimies = getAASMAFramework ().visibleHoshimies (this._nanoAI);
-			foreach (Point p in visibleHoshimies) {
-				if (!viewedHoshimies.Contains (p)) {
-					viewedHoshimies.Add (p);
+			List<Point> emptyNeedles = getAASMAFramework ().visibleEmptyNeedles (this._nanoAI);
+			foreach (Point p in emptyNeedles) {
+				if (!emptyNeedles.Contains (p)) {
+					emptyNeedles.Add (p);
 				}
 			}
 
 			// update list of viewed enemies
-			viewedEnemies = getAASMAFramework ().visiblePierres (this);
+			viewedEnemies = getAASMAFramework ().visiblePierres (this._nanoAI);
 		}
 
 		public override void receiveMessage(AASMAMessage msg)
@@ -88,90 +84,139 @@ namespace AASMAHoshimi.Deliberative
 		private static Intention[] Options () {
 			return (Intention[]) Enum.GetValues(typeof(Intention));
 		}
-
-		/**
-		 * TODO Must go to old needles sometimes
-		 */
-		private static Intention Filter(Intention[] desires, Intention prevIntention) {
-			if (getAASMAFramework ().visiblePierres (this._nanoAI).Count != 0) {
+			
+		private Intention Filter(Intention[] desires, Intention prevIntention) {
+			if (this.viewedEnemies.Count != 0) {
 				return Intention.FLEE;
 			}
 
-			if (getAASMAFramework ().protectorsAlive () < 10 ||
-			    getAASMAFramework ().containersAlive () < 10 ||
-				getAASMAFramework ().explorersAlive () < 10 ||
-				(getAASMAFramework ().overHoshimiPoint (this._nanoAI) && 
-					(!getAASMAFramework ().overNeedle (this._nanoAI))))
-			{
-				return Intention.CREATE_AGENT;
-			}
-				
-
-				return Action.FLEE;
-
-
-			if (!getAASMAFramework ().overHoshimiPoint (this._nanoAI) || getAASMAFramework ().overNeedle (this._nanoAI)) {
-				// TODO take into account the distance (choose the closest spot)
-				foreach (Point p in this.viewedHoshimies) {
-					if (!this.createdNeedles.Contains (p)) {
-						targetAction = p;
-						return Action.MOVE_EMPTY_HOLE;
-					}
-				}
+			if (getAASMAFramework ().protectorsAlive () < 10) {
+				return Intention.CREATE_PROTECTOR;
 			} 
 
-			// TODO either move around or visit a previous created hole
-			return Action.MOVE_AROUND;
+			if (getAASMAFramework ().containersAlive () < 10) {
+				return Intention.CREATE_CONTAINER;
+			}
+
+			if (getAASMAFramework ().explorersAlive () < 10) {
+				return Intention.CREATE_EXPLORER;
+			}
+			    
+			if (getAASMAFramework ().overHoshimiPoint (this._nanoAI) && 
+				(!getAASMAFramework ().overNeedle (this._nanoAI))) {
+				return Intention.CREATE_NEEDLE;
+			}
+				
+			// If there's still an empty hole, go to there
+			if (this.emptyNeedles.Count > 0) {
+				return Intention.MOVE_EMPTY_NEEDLE;
+			}
+
+			// Visit an old hoshimie point with a certain probability
+			if (this.createdNeedles.Count > 0) {
+				bool visitCreatedNeedle = Utils.randomValue (100) < 20;
+				if (visitCreatedNeedle) {
+					return Intention.MOVE_CREATED_HOSHIMIE;
+				}
+			}
+
+			return Intention.MOVE_RANDOM;
 		}
 
-//		private void executeAction(Action action, Point targetAction) {
-//			if (action == Action.MOVE_AROUND) {
-//				this.MoveToClearPosition (90);
-//			} else if (action == Action.MOVE_CREATED_HOSHIMIE || action == Action.FLEE || 
-//				action == Action.MOVE_EMPTY_HOLE) {
-//				this._nanoAI.MoveTo (targetAction);
-//			} else if (action == Action.CREATE_AGENT_CONTAINER) {
-//				this._nanoAI.Build (typeof(DeliberativeContainer), "C");
-//			} else if (action == Action.CREATE_AGENT_EXPLORER) {
-//				this._nanoAI.Build (typeof(DeliberativeExplorer), "E");
-//			} else if (action == Action.CREATE_AGENT_NEEDLE) {
-//				this.createdNeedles.Add (targetAction);
-//				this._nanoAI.Build (typeof(DeliberativeNeedle), "N");
-//			} else if (action == Action.CREATE_AGENT_PROTECTOR) {
-//				this._nanoAI.Build (typeof(DeliberativeProtector), "P");
-//			}
-//
-//			this.action = action;
-//			this.targetAction = targetAction;
-//		}
-
-		private static List<Action> Plan(Intention intention) {
+		private List<Action> Plan(Intention intention) {
 			List<Action> plan = new List<Action> ();
+			Point target;
 
 			switch (intention) {
-			case Intention.CREATE_AGENT:
+			case Intention.CREATE_CONTAINER:
+				plan.Add(new CreateAgentAction(this, typeof(DeliberativeContainer)));
 				break;
+
+			case Intention.CREATE_EXPLORER:
+				plan.Add(new CreateAgentAction(this, typeof(DeliberativeExplorer)));
+				break;
+
+			case Intention.CREATE_PROTECTOR:
+				plan.Add(new CreateAgentAction(this, typeof(DeliberativeProtector)));
+				break;
+
+			case Intention.CREATE_NEEDLE:
+				plan.Add(new CreateAgentAction(this, typeof(DeliberativeNeedle), 
+					new CreateAgentAction.AgentCreatedDelegate(this.onAgentCreated)));
+				break;
+
+			case Intention.MOVE_EMPTY_NEEDLE:
+				// choose the nearest hole
+				int distance = int.MaxValue;
+				foreach (Point p in this.emptyNeedles) {
+					if (!this.createdNeedles.Contains (p)) {
+						if (Utils.SquareDistance (this._nanoAI.Location, p) < distance) {
+							distance = Utils.SquareDistance (this._nanoAI.Location, p);
+							target = p;
+						}
+					}
+				}
+				plan.Add (new MoveAction (this._nanoAI, target));
+				plan.Add (new CreateAgentAction (this, typeof(DeliberativeNeedle)));
+				break;
+
 			case Intention.FLEE:
 				List<Point> possibleMoves = new List<Point> ();
-				foreach (Point enemy in getAASMAFramework().visiblePierres(this._nanoAI)) {
+				foreach (Point enemy in this.viewedEnemies) {
 					possibleMoves.Add (Utils.oppositDirection (this._nanoAI.Location, enemy, getAASMAFramework ().Tissue));
 				}
-				Point target = Utils.getMiddlePoint (possibleMoves.ToArray ());
-				plan.Add(new MoveAction(this, target));
+				target = Utils.getMiddlePoint (possibleMoves.ToArray ());
+				plan.Add(new MoveAction(this._nanoAI, target));
 				break;
-			case Intention.MOVE_AROUND:
-				break;
+
 			case Intention.MOVE_CREATED_HOSHIMIE:
+				// choose random hoshimie to visit
+				int randomIdx = Utils.randomValue (this.createdNeedles.Count);
+				target = this.createdNeedles [randomIdx];
+				plan.Add (new MoveAction (this._nanoAI, target));
+				break;
+
+			case Intention.MOVE_RANDOM:
+				target = ClearPoint (80);
+				plan.Add (new MoveAction (this._nanoAI, target));
 				break;
 			}
+			
+			return plan;
 		} 
 
-		private static bool Reconsider() {
-			// TODO
+		private void onAgentCreated (Type agentType)
+		{
+			if (agentType.Equals (typeof(DeliberativeNeedle))) 
+			{
+				this.createdNeedles.Add (this._nanoAI.Location);
+				this.emptyNeedles.Remove (this._nanoAI.Location);
+			}
 		}
-	}
 
-	enum Intention {
-		MOVE_AROUND, FLEE, MOVE_CREATED_HOSHIMIE, CREATE_AGENT
+		/**
+		 * Reconsiders when:
+		 * - Enemies are in the view range;
+		 * - A hole is in the range and it's unoccupied
+		 */ 
+		private bool Reconsider() {
+			bool enemieSpotted = getAASMAFramework ().visiblePierres (this._nanoAI).Count > 0;
+			bool emptyHoleInRange = false;
+
+			List<Point> emptyNeedles = getAASMAFramework().visibleEmptyNeedles(this._nanoAI);
+			foreach (Point p in emptyNeedles) {
+				if (!emptyNeedles.Contains (p)) {
+					emptyHoleInRange = true;
+					break;
+				}
+			}
+
+			return enemieSpotted || emptyHoleInRange;
+		}
+
+		private enum Intention {
+			MOVE_RANDOM, FLEE, MOVE_CREATED_HOSHIMIE, MOVE_EMPTY_NEEDLE,
+			CREATE_PROTECTOR, CREATE_CONTAINER, CREATE_EXPLORER, CREATE_NEEDLE
+		}
 	}
 }
