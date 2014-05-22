@@ -4,6 +4,7 @@ using System.Text;
 using AASMAHoshimi;
 using PH.Common;
 using System.Drawing;
+using AASMAHoshimi.Reactive;
 
 namespace AASMAHoshimi.Deliberative
 {
@@ -125,7 +126,7 @@ namespace AASMAHoshimi.Deliberative
 
 		private List<Action> Plan(Intention intention) {
 			List<Action> plan = new List<Action> ();
-			Point target;
+			Point target = Point.Empty;
 
 			switch (intention) {
 			case Intention.CREATE_CONTAINER:
@@ -137,7 +138,7 @@ namespace AASMAHoshimi.Deliberative
 				break;
 
 			case Intention.CREATE_PROTECTOR:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeProtector)));
+				plan.Add(new CreateAgentAction(this, typeof(ReactiveProtector)));
 				break;
 
 			case Intention.CREATE_NEEDLE:
