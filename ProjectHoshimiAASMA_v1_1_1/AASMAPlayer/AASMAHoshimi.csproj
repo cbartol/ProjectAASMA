@@ -80,6 +80,9 @@
     <Compile Include="Utils.cs" />
     <Compile Include="Deliberative\DeliberativeAI.cs" />
     <Compile Include="Deliberative\DeliberativeNeedle.cs" />
+    <Compile Include="Action\Action.cs" />
+    <Compile Include="Action\MoveAction.cs" />
+    <Compile Include="Action\CreateAgentAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -103,4 +106,7 @@
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\PH2007SDK\players" /y</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Action\" />
+  </ItemGroup>
 </Project>
