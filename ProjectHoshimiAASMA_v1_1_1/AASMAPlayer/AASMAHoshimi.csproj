@@ -84,6 +84,7 @@
     <Compile Include="Action\Action.cs" />
     <Compile Include="Action\MoveAction.cs" />
     <Compile Include="Action\CreateAgentAction.cs" />
+    <Compile Include="Hybrid\HybridAI.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
