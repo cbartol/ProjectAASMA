@@ -298,7 +298,7 @@ namespace AASMAHoshimi
         public static Point randomPoint(List<Point> pointList)
         {
             int pointCount = pointList.Count;
-            int randomPointIndex = Utils._randomFactory.Next(0, pointCount + 1);
+            int randomPointIndex = Utils._randomFactory.Next(0, pointCount);
 
             return pointList[randomPointIndex];
         }

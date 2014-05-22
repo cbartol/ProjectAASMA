@@ -15,7 +15,6 @@ namespace AASMAHoshimi.Deliberative {
         private List<Action> plan = new List<Action>();
         private MyIntention intention;
 
-
         private Dictionary<Point, Boolean> visitedPositions = new Dictionary<Point,Boolean>();
         private Dictionary<Point, Boolean> pointsToVisit = new Dictionary<Point,Boolean>();
 
@@ -41,8 +40,8 @@ namespace AASMAHoshimi.Deliberative {
             if (plan.Count > 0) {
                 // Continue with the same plan
                 Action action = this.plan[0];
-                action.execute();
                 if (this.State == NanoBotState.WaitingOrders) {
+                    action.execute();
                     this.plan.RemoveAt(0);
                 }
 
@@ -132,6 +131,12 @@ namespace AASMAHoshimi.Deliberative {
         }
 
         private bool Reconsider() {
+            if(nearPierres.Count > 0){
+                return true;
+            }
+            if (intention == MyIntention.MOVE_AROUND && pointsToVisit.Count > 0) {
+                return true;
+            }
             return false;
         }
 
