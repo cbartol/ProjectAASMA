@@ -75,26 +75,30 @@ namespace AASMAHoshimi.Deliberative
         }
 
         //Reconsider the current plan
-        public void Reconsider()
+        public bool Reconsider()
         {
             if (getAASMAFramework().visiblePierres(this).Count > 0)
             {
                 currentAction.cancel();
                 plan.Clear();
                 Plan(Intention.FLEE);
+                return true;
             }
-            else if (getAASMAFramework().visibleAznPoints(this).Count > 0 && Stock == 0)
+            if (getAASMAFramework().visibleAznPoints(this).Count > 0 && Stock == 0)
             {
                 currentAction.cancel();
                 plan.Clear();
                 Plan(Intention.COLLECT);
+                return true;
             }
-            else if (getAASMAFramework().visibleEmptyNeedles(this).Count > 0 && Stock > 0)
+            if (getAASMAFramework().visibleEmptyNeedles(this).Count > 0 && Stock > 0)
             {
                 currentAction.cancel();
                 plan.Clear();
                 Plan(Intention.TRANSFER);
+                return true;
             }
+            return false;
         }
 
         public override void DoActions()
@@ -135,10 +139,12 @@ namespace AASMAHoshimi.Deliberative
                 plan.Remove(currentAction);
             }
 
-            Reconsider();
-            currentAction = plan[0];
-            currentAction.execute();
-            plan.Remove(currentAction);
+            if (Reconsider())
+            {
+                currentAction = plan[0];
+                currentAction.execute();
+                plan.Remove(currentAction);
+            }
         }
 
         public override void receiveMessage(AASMAMessage msg)
