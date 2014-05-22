@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="AASMAMessage.cs" />
     <Compile Include="AASMAPlayer.cs" />
+    <Compile Include="Action\VisitObjective.cs" />
     <Compile Include="Communicative\CommunicativeExplorer.cs" />
     <Compile Include="Deliberative\DeliberativeContainer.cs" />
     <Compile Include="Communicative\CommunicativeNeedle.cs" />
@@ -108,7 +109,5 @@
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\PH2007SDK\players" /y</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="Action\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
