@@ -18,6 +18,7 @@ namespace AASMAHoshimi.Deliberative
         private List<Point> availableNeedles = new List<Point>();
         private List<Point> hoshimiPoints = new List<Point>();
         private List<Action> plan = new List<Action>();
+        private Action currentAction;
 
         private Point flee(List<Point> enemies)
         {
@@ -49,17 +50,25 @@ namespace AASMAHoshimi.Deliberative
                 case Intention.FLEE:
                     plan.Add(new MoveAction(this, flee(getAASMAFramework().visiblePierres(this))));
                     break;
+
                 case Intention.MOVE:
-                    plan.Add(new MoveAction(this, Utils.randomValidPoint(this.getAASMAFramework().Tissue)));
+                    Point point;
+                    if (hoshimiPoints.Count > 0 && Utils.randomValue(100) > 80)
+                        point = Utils.randomPoint(hoshimiPoints);
+                    else
+                        point = Utils.randomValidPoint(getAASMAFramework().Tissue);
+                    plan.Add(new MoveAction(this, point));
                     break;
+
                 case Intention.COLLECT:
                     plan.Add(new MoveAction(this, Utils.getNearestPoint(this.Location, aznPoints)));
-                    for(int i=0; i<=ContainerCapacity; i++)
+                    for(int i=0; i<=(ContainerCapacity/CollectTransfertSpeed); i++)
                         plan.Add(new CollectAction(this));
                     break;
+
                 case Intention.TRANSFER:
                     plan.Add(new MoveAction(this, Utils.getNearestPoint(this.Location, availableNeedles)));
-                    for (int i = 0; i <= ContainerCapacity; i++)
+                    for (int i = 0; i <= (ContainerCapacity/CollectTransfertSpeed); i++)
                         plan.Add(new TransferAction(this));
                     break;
             }
@@ -70,8 +79,21 @@ namespace AASMAHoshimi.Deliberative
         {
             if (getAASMAFramework().visiblePierres(this).Count > 0)
             {
+                currentAction.cancel();
                 plan.Clear();
                 Plan(Intention.FLEE);
+            }
+            else if (getAASMAFramework().visibleAznPoints(this).Count > 0 && Stock == 0)
+            {
+                currentAction.cancel();
+                plan.Clear();
+                Plan(Intention.COLLECT);
+            }
+            else if (getAASMAFramework().visibleEmptyNeedles(this).Count > 0 && Stock > 0)
+            {
+                currentAction.cancel();
+                plan.Clear();
+                Plan(Intention.TRANSFER);
             }
         }
 
@@ -108,11 +130,15 @@ namespace AASMAHoshimi.Deliberative
 
             if (this.State == NanoBotState.WaitingOrders)
             {
-                Reconsider();
-                Action action = plan[0];
-                action.execute();
-                plan.Remove(action);
+                currentAction = plan[0];
+                currentAction.execute();
+                plan.Remove(currentAction);
             }
+
+            Reconsider();
+            currentAction = plan[0];
+            currentAction.execute();
+            plan.Remove(currentAction);
         }
 
         public override void receiveMessage(AASMAMessage msg)
