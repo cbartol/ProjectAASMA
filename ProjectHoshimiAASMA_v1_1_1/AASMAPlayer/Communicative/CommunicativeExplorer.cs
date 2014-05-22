@@ -8,20 +8,27 @@ using PH.Mission;
 namespace AASMAHoshimi.Communicative {
     [Characteristics(ContainerCapacity = 0, CollectTransfertSpeed = 0, Scan = 30, MaxDamage = 0, DefenseDistance = 0, Constitution = 10)]
     public class CommunicativeExplorer : AASMAExplorer {
-        private List<Point> visitedPositions = new List<Point>();
-        private List<Point> pointsToVisit = new List<Point>();
+        //We have to use a dictionary because HashSet is not available for .NET 2.0
+        private Dictionary<Point, Boolean> visitedPositions = new Dictionary<Point, Boolean>();
+        private Dictionary<Point, Boolean> pointsToVisit = new Dictionary<Point, Boolean>();
 
-        private Point exploringPoint = Point.Empty;
+        private Point exploringPoint = new Point(-1,-1);
+        private bool isMoving = false;
+
         public CommunicativeExplorer() {
-
+            visitedPositions.Add(exploringPoint, true); // mark null Point as explored
         }
 
         public override void DoActions() {
             if (exploringPoint == this.Location) {
-                visitedPositions.Add(exploringPoint);
-                broadcastVisitedPoint(exploringPoint);
+                visitedPositions.Add(exploringPoint,true);
+//                broadcastVisitedPoint(exploringPoint);
+                isMoving = false;
             }
-
+            if (isMoving) {
+                this.MoveTo(exploringPoint);
+                return;
+            }
             // get perceptions
             List<Point> visibleObjectives = getAASMAFramework().visibleNavigationPoints(this);
             List<Point> nearPierres = getAASMAFramework().visiblePierres(this);
@@ -35,7 +42,7 @@ namespace AASMAHoshimi.Communicative {
                 return;
             }*/
             List<Point> filteredObjectives = filterObjectives(visibleObjectives);
-            sendVisiblePointsToOthers(nearPierres, filteredObjectives, visibleHoshimies, visibleAZN);
+//            sendVisiblePointsToOthers(nearPierres, filteredObjectives, visibleHoshimies, visibleAZN);
             addObjectivesToVisit(filteredObjectives);
             // get Desires
             Desire desire = getDesire();
@@ -49,33 +56,40 @@ namespace AASMAHoshimi.Communicative {
         }
 
         private Desire getDesire() {
-            if (pointsToVisit.Count > 0) {
+            if (pointsToVisit.Keys.Count > 0) {
                 return Desire.EXPLORE;
             }
             return Desire.MOVE_AROUND;
         }
 
         private Point getIntention(Desire desire) {
-            if (visitedPositions.Contains(exploringPoint)) {
+            if (visitedPositions.ContainsKey(exploringPoint)) {
                 // someone else explored this point or already been there
                 getAASMAFramework().logData(this, "Aborting action");
                 this.StopMoving();
+                isMoving = true;
+                switch (desire) {
+                    case Desire.EXPLORE:
+                        List<Point> toExplore = new List<Point>();
+                        foreach (KeyValuePair<Point, Boolean> p in pointsToVisit) {
+                            toExplore.Add(p.Key);
+                        }
+                        // the points to explore should not be empty. If that happens it's concurrency problems.
+                        exploringPoint = Utils.randomPoint(toExplore);
+                        pointsToVisit.Remove(exploringPoint);
+                        return exploringPoint;
+                    case Desire.MOVE_AROUND:
+                    default:
+                        return exploringPoint = Utils.randomValidPoint(this.getAASMAFramework().Tissue);
+                }
             }
-            switch (desire) {
-                case Desire.EXPLORE:
-                    exploringPoint = Utils.randomPoint(pointsToVisit);
-                    pointsToVisit.Remove(exploringPoint);
-                    return exploringPoint;
-                case Desire.MOVE_AROUND:
-                default:
-                    return exploringPoint = Utils.randomValidPoint(this.getAASMAFramework().Tissue);
-            }
+            return exploringPoint;
         }
 
         private void addObjectivesToVisit(List<Point> visibleObjectives) {
             foreach (Point p in visibleObjectives) {
-                if (!pointsToVisit.Contains(p) && !visitedPositions.Contains(p)) {
-                    pointsToVisit.Add(p);
+                if (!pointsToVisit.ContainsKey(p) && !visitedPositions.ContainsKey(p)) {
+                    pointsToVisit.Add(p, true);
                 }
             }
         }
@@ -83,7 +97,7 @@ namespace AASMAHoshimi.Communicative {
         private List<Point> filterObjectives(List<Point> visibleObjectives) {
             List<Point> pointsFiltered = new List<Point>();
             foreach (Point p in visibleObjectives) {
-                if(!visitedPositions.Contains(p)){
+                if(!visitedPositions.ContainsKey(p)){
                     pointsFiltered.Add(p);
                 }
             }
@@ -127,7 +141,7 @@ namespace AASMAHoshimi.Communicative {
                 getAASMAFramework().logData(this, "Recived visited position");
                 Point p = new Point(int.Parse(content[1]), int.Parse(content[2]));
                 pointsToVisit.Remove(p);
-                visitedPositions.Add(p);
+                visitedPositions.Add(p,true);
             }
             // ignore other messages
         }
