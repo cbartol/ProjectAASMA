@@ -48,6 +48,8 @@
     <Compile Include="AASMAMessage.cs" />
     <Compile Include="AASMAPlayer.cs" />
     <Compile Include="Action\VisitObjective.cs" />
+    <Compile Include="Action\CollectAction.cs" />
+    <Compile Include="Action\TransferAction.cs" />
     <Compile Include="Communicative\CommunicativeExplorer.cs" />
     <Compile Include="Deliberative\DeliberativeContainer.cs" />
     <Compile Include="Communicative\CommunicativeNeedle.cs" />
