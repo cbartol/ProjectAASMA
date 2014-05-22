@@ -13,7 +13,7 @@ namespace AASMAHoshimi.Deliberative {
         // end perceptions
 
         private List<Action> plan = new List<Action>();
-        private MyIntention intention;
+        private Intention intention;
 
         private Dictionary<Point, Boolean> visitedPositions = new Dictionary<Point,Boolean>();
         private Dictionary<Point, Boolean> pointsToVisit = new Dictionary<Point,Boolean>();
@@ -29,7 +29,7 @@ namespace AASMAHoshimi.Deliberative {
 
             if (plan.Count == 0) {
                 // get desires
-                MyIntention[] desires = Options();
+                Intention[] desires = Options();
 
                 // get intention based on the desires and the previous intention
                 this.intention = Filter(desires, this.intention);
@@ -50,7 +50,7 @@ namespace AASMAHoshimi.Deliberative {
                     action.cancel();
 
                     // get desires
-                    MyIntention[] desires = Options();
+                    Intention[] desires = Options();
 
                     // get intention based on the desires and the previous intention
                     this.intention = Filter(desires, this.intention);
@@ -86,26 +86,26 @@ namespace AASMAHoshimi.Deliberative {
             addObjectivesToVisit(getAASMAFramework().visibleNavigationPoints(this));
             nearPierres = getAASMAFramework().visiblePierres(this);
         }
-        private static MyIntention[] Options() {
-            return (MyIntention[])Enum.GetValues(typeof(MyIntention));
+        private static Intention[] Options() {
+            return (Intention[])Enum.GetValues(typeof(Intention));
         }
 
-        private MyIntention Filter(MyIntention[] desires, MyIntention prevIntention) {
+        private Intention Filter(Intention[] desires, Intention prevIntention) {
             if (nearPierres.Count > 0) {
-                return MyIntention.FLEE;
+                return Intention.FLEE;
             }
 
             if (pointsToVisit.Count > 0) {
-                return MyIntention.EXPLORE;
+                return Intention.EXPLORE;
             }
-            return MyIntention.MOVE_AROUND;
+            return Intention.MOVE_AROUND;
         }
 
-        private List<Action> Plan(MyIntention intention) {
+        private List<Action> Plan(Intention intention) {
             List<Action> plan = new List<Action>();
             Point target;
             switch (intention) {
-                case MyIntention.EXPLORE:
+                case Intention.EXPLORE:
                     List<Point> possibilities = new List<Point>();
                     foreach(KeyValuePair<Point, Boolean> point in pointsToVisit){
                         possibilities.Add(point.Key);
@@ -114,11 +114,11 @@ namespace AASMAHoshimi.Deliberative {
                     plan.Add(new MoveAction(this, target));
                     plan.Add(new VisitObjective(visitPoint, target));
                     break;
-                case MyIntention.FLEE:
+                case Intention.FLEE:
                     target = flee(nearPierres);
                     plan.Add(new MoveAction(this, target));
                     break;
-                case MyIntention.MOVE_AROUND:
+                case Intention.MOVE_AROUND:
                     plan.Add(new MoveAction(this, Utils.randomValidPoint(this.getAASMAFramework().Tissue)));
                     break;
             }
@@ -134,13 +134,13 @@ namespace AASMAHoshimi.Deliberative {
             if(nearPierres.Count > 0){
                 return true;
             }
-            if (intention == MyIntention.MOVE_AROUND && pointsToVisit.Count > 0) {
+            if (intention == Intention.MOVE_AROUND && pointsToVisit.Count > 0) {
                 return true;
             }
             return false;
         }
 
-        private enum MyIntention {
+        private enum Intention {
             MOVE_AROUND,
             EXPLORE,
             FLEE
