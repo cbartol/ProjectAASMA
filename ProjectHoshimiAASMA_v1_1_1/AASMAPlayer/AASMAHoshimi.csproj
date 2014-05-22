@@ -49,6 +49,7 @@
     <Compile Include="AASMAPlayer.cs" />
     <Compile Include="Communicative\CommunicativeExplorer.cs" />
     <Compile Include="Deliberative\DeliberativeContainer.cs" />
+    <Compile Include="Communicative\CommunicativeNeedle.cs" />
     <Compile Include="Deliberative\DeliberativeExplorer.cs" />
     <Compile Include="Examples\BuildingAI.cs" />
     <Compile Include="Examples\CommunicativeExplorer.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Examples\ForwardExplorer.cs" />
     <Compile Include="Examples\PassiveNeedle.cs" />
     <Compile Include="Examples\ShootingProtector.cs" />
+    <Compile Include="Hybrid\HybridNeedle.cs" />
     <Compile Include="Hybrid\HybridExplorer.cs" />
     <Compile Include="IActionable.cs" />
     <Compile Include="ICommunicable.cs" />

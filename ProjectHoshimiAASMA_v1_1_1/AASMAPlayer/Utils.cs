@@ -325,5 +325,28 @@ namespace AASMAHoshimi
             dest.Offset(new Point(xDist, yDist));
             return getValidPoint(tissue, dest);
         }
+
+        public static string serializePoints(List<Point> points) {
+            const string POINT_SEPARATOR = "+";
+            const string COORDENATE_SEPARATOR = ",";
+            string result = "null"; //trick to do a easy cycle
+            foreach (Point p in points) {
+                result += POINT_SEPARATOR + p.X + COORDENATE_SEPARATOR + p.Y;
+            }
+            return result;
+        }
+        public static List<Point> deserializePoints(string points) {
+            const char POINT_SEPARATOR = '+';
+            const char COORDENATE_SEPARATOR = ',';
+            string[] pts = points.Split(POINT_SEPARATOR);
+            List<Point> result = new List<Point>();
+
+            //must ignore first point (not valid)
+            for (int i = 1; i < pts.Length; i++) {
+                string[] point = pts[i].Split(COORDENATE_SEPARATOR);
+                result.Add(new Point(int.Parse(point[0]), int.Parse(point[1])));
+            }
+            return result;
+        }
     }
 }

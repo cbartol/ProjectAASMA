@@ -15,7 +15,6 @@ namespace AASMAHoshimi
         protected PH.Common.NanoAI _nanoAI;
 
         protected int _protectorNumber = 1;
-        protected int _protectorAiNumber = 1;
         protected int _explorerNumber = 1;
         protected int _needleNumber = 1;
         protected int _containerNumber = 1;
@@ -88,5 +87,21 @@ namespace AASMAHoshimi
                 this._direction = Utils.DirectionRight(this._direction);
             }
         }
+			
+		/**
+		 * SuccessMoveForward is the chance of moving forward if it's possible. [0, 100]
+		 */
+		public void MoveToClearPosition(int successMoveForward)
+		{
+			Boolean tryMoveForward = Utils.randomValue(100) < successMoveForward;
+			if (frontClearDepth(4) && tryMoveForward)
+			{
+				this.MoveForward();
+			}
+			else
+			{
+				this.RandomTurn();
+			}
+		}
     }
 }

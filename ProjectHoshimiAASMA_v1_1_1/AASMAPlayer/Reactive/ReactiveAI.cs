@@ -10,9 +10,9 @@ namespace AASMAHoshimi.Reactive
     public class ReactiveAI : AASMAAI
     {
         public ReactiveAI(NanoAI nano)
-        {
-            this._nanoAI = nano;
-        }
+		{
+			this._nanoAI = nano;
+		}
 
         public void MoveToClearPosition()
         {
@@ -36,9 +36,9 @@ namespace AASMAHoshimi.Reactive
                 List<Point> enemies = getAASMAFramework().visiblePierres(this._nanoAI);
                 flee(enemies);
             }
-            else if (this._protectorAiNumber < 8)
+			else if (this._protectorNumber < 8)
             {
-                this._nanoAI.Build(typeof(ReactiveProtectorAI), "P-AI" + this._protectorAiNumber++);
+                this._nanoAI.Build(typeof(ReactiveProtectorAI), "P-AI" + this._protectorNumber++);
             }
             else if (getAASMAFramework().protectorsAlive() < 10)
             {
@@ -65,7 +65,7 @@ namespace AASMAHoshimi.Reactive
                         return;
                     }
                 }
-                MoveToClearPosition();
+				MoveToClearPosition(90);
             }
             else if (getAASMAFramework().overHoshimiPoint(this._nanoAI) && (!getAASMAFramework().overNeedle(this._nanoAI)))
             {
