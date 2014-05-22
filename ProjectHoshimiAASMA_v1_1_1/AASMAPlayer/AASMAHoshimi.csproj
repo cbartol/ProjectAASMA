@@ -48,6 +48,7 @@
     <Compile Include="AASMAMessage.cs" />
     <Compile Include="AASMAPlayer.cs" />
     <Compile Include="Communicative\CommunicativeExplorer.cs" />
+    <Compile Include="Deliberative\DeliberativeContainer.cs" />
     <Compile Include="Communicative\CommunicativeNeedle.cs" />
     <Compile Include="Deliberative\DeliberativeExplorer.cs" />
     <Compile Include="Examples\BuildingAI.cs" />

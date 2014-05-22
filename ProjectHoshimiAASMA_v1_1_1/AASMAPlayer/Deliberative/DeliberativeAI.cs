@@ -26,8 +26,7 @@ namespace AASMAHoshimi.Deliberative
 		{
 			if (Type.Equals (typeof(DeliberativeNeedle))) 
 			{
-				// TODO verify if this is really the point
-				this.createdNeedles.Add (this._nanoAI.PointInfo);
+				this.createdNeedles.Add (this._nanoAI.Location);
 			}
 		}
 
@@ -91,7 +90,7 @@ namespace AASMAHoshimi.Deliberative
 		}
 
 		/**
-		 * Must go to old needles sometimes
+		 * TODO Must go to old needles sometimes
 		 */
 		private static Intention Filter(Intention[] desires, Intention prevIntention) {
 			if (getAASMAFramework ().visiblePierres (this._nanoAI).Count != 0) {
@@ -106,11 +105,7 @@ namespace AASMAHoshimi.Deliberative
 			{
 				return Intention.CREATE_AGENT;
 			}
-				List<Point> possibleMoves = new List<Point> ();
-				foreach (Point enemy in getAASMAFramework().visiblePierres(this._nanoAI)) {
-					possibleMoves.Add (Utils.oppositDirection (this._nanoAI.Location, enemy, getAASMAFramework ().Tissue));
-				}
-				Point target = Utils.getMiddlePoint (possibleMoves.ToArray ());
+				
 
 				return Action.FLEE;
 
@@ -151,11 +146,23 @@ namespace AASMAHoshimi.Deliberative
 //		}
 
 		private static List<Action> Plan(Intention intention) {
+			List<Action> plan = new List<Action> ();
+
 			switch (intention) {
-				case Intention.CREATE_AGENT:
-					break;
-			
-			case Intention.
+			case Intention.CREATE_AGENT:
+				break;
+			case Intention.FLEE:
+				List<Point> possibleMoves = new List<Point> ();
+				foreach (Point enemy in getAASMAFramework().visiblePierres(this._nanoAI)) {
+					possibleMoves.Add (Utils.oppositDirection (this._nanoAI.Location, enemy, getAASMAFramework ().Tissue));
+				}
+				Point target = Utils.getMiddlePoint (possibleMoves.ToArray ());
+				plan.Add(new MoveAction(this, target));
+				break;
+			case Intention.MOVE_AROUND:
+				break;
+			case Intention.MOVE_CREATED_HOSHIMIE:
+				break;
 			}
 		} 
 
