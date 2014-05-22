@@ -48,6 +48,7 @@
     <Compile Include="AASMAMessage.cs" />
     <Compile Include="AASMAPlayer.cs" />
     <Compile Include="Communicative\CommunicativeExplorer.cs" />
+    <Compile Include="Deliberative\DeliberativeContainer.cs" />
     <Compile Include="Deliberative\DeliberativeExplorer.cs" />
     <Compile Include="Examples\BuildingAI.cs" />
     <Compile Include="Examples\CommunicativeExplorer.cs" />
@@ -100,7 +101,5 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\PH2007SDK\players" /y</PostBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Deliberative\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
