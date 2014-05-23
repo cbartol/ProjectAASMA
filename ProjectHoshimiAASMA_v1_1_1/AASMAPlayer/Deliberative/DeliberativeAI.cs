@@ -236,7 +236,10 @@ namespace AASMAHoshimi.Deliberative
                 getAASMAFramework().logData(this._nanoAI, "Empty hole in range");
             }
 
-			return (prevIntention != Intention.FLEE && enemieSpotted) || emptyHoleInRange;
+			return (prevIntention != Intention.FLEE && enemieSpotted) || emptyHoleInRange || 
+				(prevIntention != Intention.CREATE_PROTECTOR && getAASMAFramework().protectorsAlive() < 10) || 
+				(prevIntention != Intention.CREATE_CONTAINER && getAASMAFramework().containersAlive() < 10) ||
+				(prevIntention != Intention.CREATE_EXPLORER && getAASMAFramework().explorersAlive() < 10);
 		}
 
 		private enum Intention {
