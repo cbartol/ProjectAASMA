@@ -20,6 +20,11 @@ namespace AASMAHoshimi.Deliberative
         private List<Action> plan = new List<Action>();
         private Action currentAction;
 
+        private void removeNeedleFromList(Point position)
+        {
+            availableNeedles.Remove(position);
+        }
+
         private Point flee(List<Point> enemies)
         {
             List<Point> possibleMoves = new List<Point>();
@@ -69,7 +74,7 @@ namespace AASMAHoshimi.Deliberative
                 case Intention.TRANSFER:
                     plan.Add(new MoveAction(this, Utils.getNearestPoint(this.Location, availableNeedles)));
                     for (int i = 0; i <= (ContainerCapacity/CollectTransfertSpeed); i++)
-                        plan.Add(new TransferAction(this));
+                        plan.Add(new TransferAction(this, removeNeedleFromList));
                     break;
             }
         }
