@@ -144,7 +144,7 @@ namespace AASMAHoshimi.Communicative
                 if (content[0].Equals("Give me knowledge")) {
                     if(visitedObjectives.Count > 0){
                         AASMAMessage message = new AASMAMessage(this._nanoAI.InternalName, "Objectives knowledge;" + Utils.serializePoints(visitedObjectives));
-                        getAASMAFramework().sendMessage(message, msg.Sender);
+                        getAASMAFramework().broadCastMessage(message);
                     }
                 }
             } catch (Exception e) {
