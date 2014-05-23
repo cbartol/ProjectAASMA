@@ -197,7 +197,7 @@ namespace AASMAHoshimi.Communicative
 				break;
 
 			case Intention.CREATE_PROTECTOR:
-				if (getAASMAFramework ().protectorsAlive () < 8) {
+				if (getAASMAFramework ().protectorsAlive () < 6) {
 					plan.Add (new CreateAgentAction (this, typeof(CommunicativeProtectorAI), "PAI" + this._protectorNumber));
 				} else {
 					plan.Add (new CreateAgentAction (this, typeof(CommunicativeProtector), "P" + this._protectorNumber));

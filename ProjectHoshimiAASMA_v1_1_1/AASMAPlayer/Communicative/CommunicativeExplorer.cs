@@ -181,7 +181,7 @@ namespace AASMAHoshimi.Communicative {
         }
 
         private void sendVisiblePointsToOthers() {
-            if (nearPierres.Count > 0) {
+            if (nearPierres.Count > 0 && getAASMAFramework().CurrentTurn % 100 == 0) {
                 AASMAMessage message = new AASMAMessage(this.InternalName, "Pierre;" + Utils.serializePoints(nearPierres));
                 getAASMAFramework().broadCastMessage(message); // or iterate each protector
             }

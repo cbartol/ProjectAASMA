@@ -91,6 +91,13 @@ namespace AASMAHoshimi.Communicative
                 Plan(currentIntetion = Intention.COLLECT);
                 return true;
             }
+            if (aznPoints.Count > 0 && currentIntetion == Intention.MOVE && Stock == 0) {
+                currentAction.cancel();
+                plan.Clear();
+                Plan(currentIntetion = Intention.COLLECT);
+                return true;
+            }
+
             if (getAASMAFramework().visibleEmptyNeedles(this).Count > 0 && Stock > 0)
             {
                 currentAction.cancel();
@@ -131,6 +138,12 @@ namespace AASMAHoshimi.Communicative
                     return;
                 }
 
+
+                if (availableNeedles.Count == 0) {
+                    AASMAMessage message = new AASMAMessage(this.InternalName, "Looking for needle");
+                    getAASMAFramework().broadCastMessage(message);
+                }
+
                 //When there isn't a plan, plan one
                 if (plan.Count == 0) {
                     Intention intention = currentIntetion = Deliberate();
@@ -164,6 +177,16 @@ namespace AASMAHoshimi.Communicative
                     if (!aznPoints.Contains(p))
                         aznPoints.Add(p);
                 }
+            } else if (content.Length == 3 && content[0].Equals("Needle")) {
+                getAASMAFramework().logData(this, "Received needle: " + msg.Content);
+                Point p = new Point(int.Parse(content[1]), int.Parse(content[2]));
+                if (!availableNeedles.Contains(p)) {
+                    availableNeedles.Add(p);
+                }
+            } else if (content.Length == 3 && content[0].Equals("Needle Full")) {
+                getAASMAFramework().logData(this, "Received full needle: " + msg.Content);
+                Point p = new Point(int.Parse(content[1]), int.Parse(content[2]));
+                availableNeedles.Remove(p);
             }
             } catch (Exception e) {
                 getAASMAFramework().logData(this, e.Message);

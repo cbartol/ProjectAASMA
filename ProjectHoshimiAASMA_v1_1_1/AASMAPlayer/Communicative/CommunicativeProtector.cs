@@ -127,7 +127,7 @@ namespace AASMAHoshimi.Communicative
             string[] content = msg.Content.Split(';');
             if (content.Length == 2 && content[0].Equals("Pierre")) {
                 foreach (Point p in Utils.deserializePoints(content[1])) {
-                    if (!enemies.Contains(p))
+                    if (!otherEnemies.Contains(p))
                         otherEnemies.Add(p);
                 }
             }

@@ -20,7 +20,7 @@ namespace AASMAHoshimi.Communicative
 			}
             if (full() && haveToInform) {
                 haveToInform = false;
-                AASMAMessage message = new AASMAMessage(this.InternalName, "Needle Full");
+                AASMAMessage message = new AASMAMessage(this.InternalName, "Needle Full;" + this.Location.X + ";" + this.Location.Y);
                 getAASMAFramework().broadCastMessage(message);
             }
 		}
