@@ -148,7 +148,7 @@ namespace AASMAHoshimi.Deliberative
 				break;
 
 			case Intention.CREATE_PROTECTOR:
-				if (getAASMAFramework ().protectorsAlive () < 8) {
+				if (this._protectorNumber < 8) {
 					plan.Add (new CreateAgentAction (this, typeof(DeliberativeProtectorAI), "PAI" + this._protectorNumber));
 				} else {
 					plan.Add (new CreateAgentAction (this, typeof(DeliberativeProtector), "P" + this._protectorNumber));
