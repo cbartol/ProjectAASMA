@@ -237,7 +237,9 @@ namespace AASMAHoshimi.Hybrid
                 }
             }
 
-			return false;
+			return (prevIntention != Intention.CREATE_PROTECTOR && getAASMAFramework().protectorsAlive() < 10) || 
+				(prevIntention != Intention.CREATE_CONTAINER && getAASMAFramework().containersAlive() < 10) ||
+				(prevIntention != Intention.CREATE_EXPLORER && getAASMAFramework().explorersAlive() < 10);
 		}
 
 		private enum Intention {
