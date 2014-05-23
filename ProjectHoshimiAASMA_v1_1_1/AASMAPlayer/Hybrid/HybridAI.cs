@@ -133,19 +133,19 @@ namespace AASMAHoshimi.Hybrid
 
 			switch (intention) {
 			case Intention.CREATE_CONTAINER:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeContainer)));
+				plan.Add(new CreateAgentAction(this, typeof(HybridContainer)));
 				break;
 
 			case Intention.CREATE_EXPLORER:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeExplorer)));
+				plan.Add(new CreateAgentAction(this, typeof(HybridExplorer)));
 				break;
 
 			case Intention.CREATE_PROTECTOR:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeProtector)));
+				plan.Add(new CreateAgentAction(this, typeof(HybridProtector)));
 				break;
 
 			case Intention.CREATE_NEEDLE:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeNeedle), 
+				plan.Add(new CreateAgentAction(this, typeof(HybridNeedle), 
 					new CreateAgentAction.AgentCreatedDelegate(this.onAgentCreated)));
 				break;
 
@@ -161,7 +161,7 @@ namespace AASMAHoshimi.Hybrid
 					}
 				}
 				plan.Add (new MoveAction (this._nanoAI, target));
-				plan.Add (new CreateAgentAction (this, typeof(DeliberativeNeedle)));
+				plan.Add (new CreateAgentAction (this, typeof(HybridNeedle)));
 				this.canReconsider = true;
 				break;
 
@@ -194,7 +194,7 @@ namespace AASMAHoshimi.Hybrid
 
 		private void onAgentCreated (Type agentType)
 		{
-			if (agentType.Equals (typeof(DeliberativeNeedle))) 
+			if (agentType.Equals (typeof(HybridNeedle))) 
 			{
 				this.createdNeedles.Add (this._nanoAI.Location);
 				this.emptyNeedles.Remove (this._nanoAI.Location);
