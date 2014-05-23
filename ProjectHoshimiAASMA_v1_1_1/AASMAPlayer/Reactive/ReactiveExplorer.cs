@@ -13,7 +13,7 @@ namespace AASMAHoshimi.Reactive {
         public override void DoActions() {
             List<Point> objectivePoints = getAASMAFramework().visibleNavigationPoints(this);
             if(objectivePoints.Count > 0){
-                this.MoveTo(Utils.randomPoint(objectivePoints));
+                this.MoveTo(Utils.randomPoint(objectivePoints, getAASMAFramework().Tissue));
             } else if (frontClear()) {
                 int rand = Utils.randomValue(100);
                 if (rand < 95) {

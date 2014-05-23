@@ -110,7 +110,7 @@ namespace AASMAHoshimi.Hybrid {
                     foreach(KeyValuePair<Point, Boolean> point in pointsToVisit){
                         possibilities.Add(point.Key);
                     }
-                    target = Utils.randomPoint(possibilities);
+                    target = Utils.randomPoint(possibilities, getAASMAFramework().Tissue);
                     plan.Add(new MoveAction(this, target));
                     plan.Add(new VisitObjective(visitPoint, target));
                     break;

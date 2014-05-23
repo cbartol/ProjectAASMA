@@ -295,8 +295,11 @@ namespace AASMAHoshimi
             return neighbourPoint;
         }
 
-        public static Point randomPoint(List<Point> pointList)
+        public static Point randomPoint(List<Point> pointList, Tissue tissue)
         {
+            if(pointList.Count == 0){
+                return randomValidPoint(tissue);
+            }
             int pointCount = pointList.Count;
             int randomPointIndex = Utils._randomFactory.Next(0, pointCount);
 

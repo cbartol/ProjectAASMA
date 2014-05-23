@@ -52,6 +52,10 @@
     <Compile Include="Action\CollectAction.cs" />
     <Compile Include="Action\TransferAction.cs" />
     <Compile Include="Communicative\CommunicativeExplorer.cs" />
+    <Compile Include="Communicative\CommunicativeAI.cs" />
+    <Compile Include="Communicative\CommunicativeContainer.cs" />
+    <Compile Include="Communicative\CommunicativeProtector.cs" />
+    <Compile Include="Communicative\CommunicativeProtectorAI.cs" />
     <Compile Include="Deliberative\DeliberativeContainer.cs" />
     <Compile Include="Communicative\CommunicativeNeedle.cs" />
     <Compile Include="Deliberative\DeliberativeExplorer.cs" />

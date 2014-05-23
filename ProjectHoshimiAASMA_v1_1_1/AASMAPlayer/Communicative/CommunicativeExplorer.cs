@@ -17,6 +17,7 @@ namespace AASMAHoshimi.Communicative {
 
         private List<Action> plan = new List<Action>();
         private Intention intention;
+        private bool firstTime = true;
 
         private Dictionary<Point, Boolean> visitedPositions = new Dictionary<Point, Boolean>();
         private Dictionary<Point, Boolean> pointsToVisit = new Dictionary<Point, Boolean>();
@@ -24,15 +25,22 @@ namespace AASMAHoshimi.Communicative {
         private Point exploringPoint = Point.Empty;
 
         public override void DoActions() {
+            try { 
+            if (firstTime) {
+                firstTime = false;
+                AASMAMessage message = new AASMAMessage(this.InternalName, "Give me knowledge");
+                this.getAASMAFramework().sendMessage(message, "AI");
+                return;
+            }
             // get perceptions
             updatePerceptions();
-            /*
+
             if (nearPierres.Count > 0) {
                 plan = new List<Action>();
                 this.StopMoving();
                 this.MoveTo(flee(nearPierres));
                 return;
-            }*/
+            }
             sendVisiblePointsToOthers();
 
             if (plan.Count == 0) {
@@ -67,6 +75,10 @@ namespace AASMAHoshimi.Communicative {
                     this.plan = Plan(this.intention);
                 }
             }
+            } catch (Exception e) {
+                getAASMAFramework().logData(this, e.Message);
+                getAASMAFramework().logData(this, e.StackTrace);
+            }
         }
 
         private List<Point> addObjectivesToVisit(List<Point> visibleObjectives) {
@@ -81,16 +93,25 @@ namespace AASMAHoshimi.Communicative {
         }
 
         public override void receiveMessage(AASMAMessage msg) {
-            string[] content = msg.Content.Split(';');
-            if (content.Length == 2 && content[0].Equals("New objective")) {
-                addObjectivesToVisit(Utils.deserializePoints(content[1]));
-            } else if (content.Length == 3 && content[0].Equals("Visited objective")) {
-                getAASMAFramework().logData(this, "Received visited position: " + msg.Content);
-                Point p = new Point(int.Parse(content[1]), int.Parse(content[2]));
-                if (pointsToVisit.ContainsKey(p)) {
-                    pointsToVisit.Remove(p);
+            try {
+                string[] content = msg.Content.Split(';');
+                if (content.Length == 2 && content[0].Equals("New objective")) {
+                    addObjectivesToVisit(Utils.deserializePoints(content[1]));
+                } else if (content.Length == 3 && content[0].Equals("Visited objective")) {
+                    getAASMAFramework().logData(this, "Received visited position: " + msg.Content);
+                    Point p = new Point(int.Parse(content[1]), int.Parse(content[2]));
+                    if (pointsToVisit.ContainsKey(p)) {
+                        pointsToVisit.Remove(p);
+                    }
+                    visitedPositions[p] = true;
+                } else if (content.Length == 2 && content[0].Equals("Objectives knowledge")) {
+                    foreach (Point p in Utils.deserializePoints(content[1])) {
+                        visitPoint(p);
+                    }
                 }
-                visitedPositions[p] = true;
+            } catch (Exception e) {
+                getAASMAFramework().logData(this, e.Message);
+                getAASMAFramework().logData(this, e.StackTrace);
             }
         }
 
@@ -130,7 +151,7 @@ namespace AASMAHoshimi.Communicative {
                     foreach (KeyValuePair<Point, Boolean> point in pointsToVisit) {
                         possibilities.Add(point.Key);
                     }
-                    target = exploringPoint = Utils.randomPoint(possibilities);
+                    target = exploringPoint = Utils.randomPoint(possibilities, getAASMAFramework().Tissue);
                     plan.Add(new MoveAction(this, target));
                     plan.Add(new VisitObjective(visitPoint, target));
                     break;

@@ -54,7 +54,7 @@ namespace AASMAHoshimi.Hybrid
                 case Intention.MOVE:
                     Point point;
                     if (hoshimiPoints.Count > 0 && Utils.randomValue(100) > 80)
-                        point = Utils.randomPoint(hoshimiPoints);
+                        point = Utils.randomPoint(hoshimiPoints, getAASMAFramework().Tissue);
                     else
                         point = Utils.randomValidPoint(getAASMAFramework().Tissue);
                     plan.Add(new MoveAction(this, point));

@@ -54,9 +54,9 @@ namespace AASMAHoshimi.Deliberative
                     else if (random < 60)
                         point = Utils.randomValidPoint(getAASMAFramework().Tissue);
                     else if (random < 80)
-                        point = Utils.randomPoint(aznPoints);
+                        point = Utils.randomPoint(aznPoints, getAASMAFramework().Tissue);
                     else
-                        point = Utils.randomPoint(needles);
+                        point = Utils.randomPoint(needles, getAASMAFramework().Tissue);
                     plan.Add(new MoveAction(this, point));
                     break;
             }
