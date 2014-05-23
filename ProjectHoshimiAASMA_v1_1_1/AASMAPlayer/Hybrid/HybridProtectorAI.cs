@@ -86,14 +86,19 @@ namespace AASMAHoshimi.Hybrid
                 if (!needles.Contains(p))
                     needles.Add(p);
             }
-            enemies = getAASMAFramework().visiblePierres(this);
 
+            enemies = getAASMAFramework().visiblePierres(this);
             // react to enemies
-            if(enemies.Count > 0){
-                plan = new List<Action>();
-                this.StopMoving();
-                this.DefendTo(Utils.getNearestPoint(this.Location, enemies), 10);
-                return;
+            if (enemies.Count > 0)
+            {
+                if (Utils.SquareDistance(this.Location, Utils.getNearestPoint(this.Location, enemies)) <=
+                    this.DefenseDistance * this.DefenseDistance)
+                {
+                    plan = new List<Action>();
+                    this.StopMoving();
+                    this.DefendTo(Utils.getNearestPoint(this.Location, enemies), 10);
+                    return;
+                }
             }
 
             //When there isn't a plan, plan one

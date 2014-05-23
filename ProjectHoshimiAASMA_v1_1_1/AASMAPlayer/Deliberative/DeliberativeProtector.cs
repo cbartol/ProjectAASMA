@@ -22,8 +22,11 @@ namespace AASMAHoshimi.Deliberative
         //Deliberates and return the choosen intention
         private Intention Deliberate()
         {
-            if (getAASMAFramework().visiblePierres(this).Count > 0)
-                return Intention.DEFEND;
+            List<Point> enemies = getAASMAFramework().visiblePierres(this);
+            if (enemies.Count > 0)
+                if (Utils.SquareDistance(this.Location, Utils.getNearestPoint(this.Location, enemies)) <= 
+                    this.DefenseDistance * this.DefenseDistance)
+                    return Intention.DEFEND;
             return Intention.MOVE;
         }
 
@@ -55,13 +58,16 @@ namespace AASMAHoshimi.Deliberative
         //Reconsider the current plan
         public bool Reconsider()
         {
-            if (getAASMAFramework().visiblePierres(this).Count > 0)
-            {
-                currentAction.cancel();
-                plan.Clear();
-                Plan(Intention.DEFEND);
-                return true;
-            }
+            List<Point> enemies = getAASMAFramework().visiblePierres(this);
+            if (enemies.Count > 0)
+                if (Utils.SquareDistance(this.Location, Utils.getNearestPoint(this.Location, enemies)) <=
+                    this.DefenseDistance * this.DefenseDistance)
+                {
+                    currentAction.cancel();
+                    plan.Clear();
+                    Plan(Intention.DEFEND);
+                    return true;
+                }
             return false;
         }
 

@@ -63,8 +63,11 @@
     <Compile Include="Examples\ForwardExplorer.cs" />
     <Compile Include="Examples\PassiveNeedle.cs" />
     <Compile Include="Examples\ShootingProtector.cs" />
+    <Compile Include="Hybrid\HybridContainer.cs" />
     <Compile Include="Hybrid\HybridNeedle.cs" />
     <Compile Include="Hybrid\HybridExplorer.cs" />
+    <Compile Include="Hybrid\HybridProtector.cs" />
+    <Compile Include="Hybrid\HybridProtectorAI.cs" />
     <Compile Include="IActionable.cs" />
     <Compile Include="ICommunicable.cs" />
     <Compile Include="NanoBots\AASMAAI.cs" />
