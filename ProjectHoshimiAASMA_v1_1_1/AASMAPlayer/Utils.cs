@@ -322,8 +322,8 @@ namespace AASMAHoshimi
         }
 
         public static Point oppositDirection(Point myLocation, Point point, Tissue tissue) {
-            int xDist = Math.Sign(myLocation.X - point.X)*4;
-            int yDist = Math.Sign(myLocation.Y - point.Y)*4;
+            int xDist = Math.Sign(myLocation.X - point.X)*6;
+            int yDist = Math.Sign(myLocation.Y - point.Y)*6;
             Point dest = myLocation;
             dest.Offset(new Point(xDist, yDist));
             return getValidPoint(tissue, dest);

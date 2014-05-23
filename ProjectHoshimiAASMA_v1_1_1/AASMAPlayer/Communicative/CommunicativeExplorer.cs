@@ -14,7 +14,8 @@ namespace AASMAHoshimi.Communicative {
         private List<Point> visibleAZN = new List<Point>();
         private List<Point> pointsToSend = new List<Point>();
         // end perceptions
-
+        private Dictionary<Point, Boolean> sentPoints = new Dictionary<Point, bool>();
+        
         private List<Action> plan = new List<Action>();
         private Intention intention;
         private bool firstTime = true;
@@ -34,13 +35,13 @@ namespace AASMAHoshimi.Communicative {
             }
             // get perceptions
             updatePerceptions();
-
+            /* #YOLO
             if (nearPierres.Count > 0) {
                 plan = new List<Action>();
                 this.StopMoving();
                 this.MoveTo(flee(nearPierres));
                 return;
-            }
+            }  #YOLO */
             sendVisiblePointsToOthers();
 
             if (plan.Count == 0) {
@@ -181,22 +182,23 @@ namespace AASMAHoshimi.Communicative {
         }
 
         private void sendVisiblePointsToOthers() {
-            if (nearPierres.Count > 0) {
-                AASMAMessage message = new AASMAMessage(this.InternalName, "Pierre;" + Utils.serializePoints(nearPierres));
-                getAASMAFramework().broadCastMessage(message); // or iterate each protector
-            }
 
-            if (pointsToSend.Count > 0) {
-                AASMAMessage message = new AASMAMessage(this.InternalName, "New objective;" + Utils.serializePoints(pointsToSend));
+            List<Point> points = filterSentPoints(pointsToSend);
+            if (points.Count > 0) {
+                AASMAMessage message = new AASMAMessage(this.InternalName, "New objective;" + Utils.serializePoints(points));
                 getAASMAFramework().broadCastMessage(message); // or iterate each explorer
                 pointsToSend.Clear();
             }
-            if (visibleHoshimies.Count > 0) {
-                AASMAMessage message = new AASMAMessage(this.InternalName, "Hoshimi;" + Utils.serializePoints(visibleHoshimies));
+
+            points = filterSentPoints(visibleHoshimies);
+            if (points.Count > 0) {
+                AASMAMessage message = new AASMAMessage(this.InternalName, "Hoshimi;" + Utils.serializePoints(points));
                 getAASMAFramework().sendMessage(message, "AI");
             }
-            if (visibleAZN.Count > 0) {
-                AASMAMessage message = new AASMAMessage(this.InternalName, "AZN;" + Utils.serializePoints(visibleAZN));
+
+            points = filterSentPoints(visibleAZN);
+            if (points.Count > 0) {
+                AASMAMessage message = new AASMAMessage(this.InternalName, "AZN;" + Utils.serializePoints(points));
                 getAASMAFramework().broadCastMessage(message); // or iterate each Container
             }
         }
@@ -204,6 +206,17 @@ namespace AASMAHoshimi.Communicative {
         private void broadcastVisitedPoint(Point p) {
             AASMAMessage message = new AASMAMessage(this.InternalName, "Visited objective;" + p.X + ";" + p.Y);
             getAASMAFramework().broadCastMessage(message); // or iterate each explorer
+        }
+
+        private List<Point> filterSentPoints(List<Point> points) {
+            List<Point> filtered = new List<Point>();
+            foreach(Point p in points){
+                if (!sentPoints.ContainsKey(p)) {
+                    filtered.Add(p);
+                    sentPoints[p] = true;
+                }
+            }
+            return filtered;
         }
 
         private enum Intention {
