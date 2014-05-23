@@ -123,18 +123,7 @@ namespace AASMAHoshimi.Communicative
 
         public override void receiveMessage(AASMAMessage msg)
         {
-            try { 
-            string[] content = msg.Content.Split(';');
-            if (content.Length == 2 && content[0].Equals("Pierre")) {
-                foreach (Point p in Utils.deserializePoints(content[1])) {
-                    if (!otherEnemies.Contains(p))
-                        otherEnemies.Add(p);
-                }
-            }
-            } catch (Exception e) {
-                getAASMAFramework().logData(this, e.Message);
-                getAASMAFramework().logData(this, e.StackTrace);
-            }
+            // they just wall around
         }
     }
 }

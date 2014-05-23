@@ -11,7 +11,7 @@ namespace AASMAHoshimi.Communicative
     {
         private enum Intention
         {
-            FIND_AI, FOLLOW
+            MOVE_AROUND, FOLLOW
         }
 
         private Point lastAIPosition = Point.Empty;
@@ -28,7 +28,7 @@ namespace AASMAHoshimi.Communicative
             if (isAInear()) {
                 return Intention.FOLLOW;
             }
-            return Intention.FIND_AI;
+            return Intention.MOVE_AROUND;
         }
 
         //Plan a set of actions
@@ -39,17 +39,17 @@ namespace AASMAHoshimi.Communicative
                 case Intention.FOLLOW:
                     plan.Add(new MoveAction(this, lastAIPosition));
                     break;
-                case Intention.FIND_AI:
-                    Point point = lastAIPosition;
-/*                    int random = Utils.randomValue(100);
+                case Intention.MOVE_AROUND:
+                    Point point;
+                    int random = Utils.randomValue(100);
                     if (random < 20)
                         point = getAASMAFramework().InjectionPoint;
                     else if (random < 60)
                         point = Utils.randomValidPoint(getAASMAFramework().Tissue);
                     else if (random < 80)
-                        point = Utils.randomPoint(aznPoints);
+                        point = Utils.randomPoint(aznPoints, getAASMAFramework().Tissue);
                     else
-                        point = Utils.randomPoint(needles);*/
+                        point = Utils.randomPoint(needles, getAASMAFramework().Tissue);
                     plan.Add(new MoveAction(this, point));
                     break;
             }
@@ -86,7 +86,6 @@ namespace AASMAHoshimi.Communicative
                 if (!needles.Contains(p))
                     needles.Add(p);
             }
-            lastAIPosition = getAASMAFramework().AI.Location; // Do this with messages
 
             //Reactive to enimies - defend
             enemies = getAASMAFramework().visiblePierres(this);

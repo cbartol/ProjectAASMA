@@ -182,13 +182,8 @@ namespace AASMAHoshimi.Communicative {
         }
 
         private void sendVisiblePointsToOthers() {
-            List<Point> points = filterSentPoints(nearPierres);
-            if (points.Count > 0 && getAASMAFramework().CurrentTurn % 100 == 0) {
-                AASMAMessage message = new AASMAMessage(this.InternalName, "Pierre;" + Utils.serializePoints(points));
-                getAASMAFramework().broadCastMessage(message); // or iterate each protector
-            }
 
-            points = filterSentPoints(pointsToSend);
+            List<Point> points = filterSentPoints(pointsToSend);
             if (points.Count > 0) {
                 AASMAMessage message = new AASMAMessage(this.InternalName, "New objective;" + Utils.serializePoints(points));
                 getAASMAFramework().broadCastMessage(message); // or iterate each explorer
