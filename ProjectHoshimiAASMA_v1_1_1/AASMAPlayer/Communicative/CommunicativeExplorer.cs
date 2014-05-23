@@ -35,13 +35,13 @@ namespace AASMAHoshimi.Communicative {
             }
             // get perceptions
             updatePerceptions();
-
+            /* #YOLO
             if (nearPierres.Count > 0) {
                 plan = new List<Action>();
                 this.StopMoving();
                 this.MoveTo(flee(nearPierres));
                 return;
-            }
+            }  #YOLO */
             sendVisiblePointsToOthers();
 
             if (plan.Count == 0) {
