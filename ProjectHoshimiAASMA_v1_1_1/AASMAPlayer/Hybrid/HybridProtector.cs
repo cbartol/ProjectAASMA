@@ -72,8 +72,8 @@ namespace AASMAHoshimi.Hybrid
                     needles.Add(p);
             }
 
+            //Reactive to enimies - defend
             enemies = getAASMAFramework().visiblePierres(this);
-            // react to enemies
             if (enemies.Count > 0) {
                 if (Utils.SquareDistance(this.Location, Utils.getNearestPoint(this.Location, enemies)) <=
                     this.DefenseDistance * this.DefenseDistance)

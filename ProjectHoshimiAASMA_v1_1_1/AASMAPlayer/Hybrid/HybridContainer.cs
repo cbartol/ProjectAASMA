@@ -118,6 +118,8 @@ namespace AASMAHoshimi.Hybrid
                 if (!hoshimiPoints.Contains(p))
                     hoshimiPoints.Add(p);
             }
+
+            //Reactive to enimies - flee
             enemies = getAASMAFramework().visiblePierres(this);
             if (enemies.Count > 0) {
                 plan = new List<Action>();
