@@ -16,6 +16,7 @@ namespace AASMAHoshimi.Hybrid
 		private Intention intention;
         private Point currentTarget;
 		private bool canReconsider;
+		private Action currentAction;
 
 		public HybridAI(NanoAI nano)
 		{
@@ -30,6 +31,23 @@ namespace AASMAHoshimi.Hybrid
 			// get perceptions
 			updatePerceptions ();
 
+			if (this.viewedEnemies.Count > 0) {
+				// cancel current action and forget the plan
+				if (this.plan.Count > 0) {
+					this.currentAction.cancel ();
+					this.plan.Clear ();
+				}
+
+				// Run away in the opposite direction
+				List<Point> possibleMoves = new List<Point> ();
+				foreach (Point enemy in this.viewedEnemies) {
+					possibleMoves.Add (Utils.oppositDirection (this._nanoAI.Location, enemy, getAASMAFramework ().Tissue));
+				}
+				Point target = Utils.getMiddlePoint (possibleMoves.ToArray ());
+				new MoveAction (this._nanoAI, target).execute ();
+				this.currentTarget = target;
+			}
+				
 			if (plan.Count == 0) {
 				// get desires
 				Intention[] desires = Options ();
@@ -43,16 +61,16 @@ namespace AASMAHoshimi.Hybrid
 			if (plan.Count > 0) {
 				// Continue with the same plan
 
-				Action action = this.plan [0];
+				this.currentAction = this.plan [0];
 				// Only remove action when it has finished
 				if (this._nanoAI.State == NanoBotState.WaitingOrders) {
-					action.execute ();
+					this.currentAction.execute ();
 					this.plan.RemoveAt (0);
 				}
 
 				updatePerceptions ();
 				if (this.canReconsider && Reconsider (this.intention)) {
-					action.cancel ();
+					this.currentAction.cancel ();
 
 					// get desires
 					Intention[] desires = Options ();
@@ -104,10 +122,6 @@ namespace AASMAHoshimi.Hybrid
 		}
 			
 		private Intention Filter(Intention[] desires, Intention prevIntention) {
-			if (this.viewedEnemies.Count != 0) {
-				return Intention.FLEE;
-			}
-
 			if (getAASMAFramework ().protectorsAlive () < 10) {
 				return Intention.CREATE_PROTECTOR;
 			} 
@@ -184,16 +198,6 @@ namespace AASMAHoshimi.Hybrid
                 this.canReconsider = true;
 				break;
 
-			case Intention.FLEE:
-				List<Point> possibleMoves = new List<Point> ();
-				foreach (Point enemy in this.viewedEnemies) {
-					possibleMoves.Add (Utils.oppositDirection (this._nanoAI.Location, enemy, getAASMAFramework ().Tissue));
-				}
-				target = Utils.getMiddlePoint (possibleMoves.ToArray ());
-				plan.Add(new MoveAction(this._nanoAI, target));
-                this.currentTarget = target;
-				break;
-
 			case Intention.MOVE_RANDOM:
 				plan.Add (new MoveAction (this._nanoAI, Utils.randomValidPoint(getAASMAFramework().Tissue)));
                 this.currentTarget = target;
@@ -220,7 +224,6 @@ namespace AASMAHoshimi.Hybrid
 		 * - A hole is in the range and it's unoccupied
 		 */ 
 		private bool Reconsider(Intention prevIntention) {
-			bool enemieSpotted = getAASMAFramework ().visiblePierres (this._nanoAI).Count > 0;
 			bool emptyHoleInRange = false;
 
 			List<Point> hoshimiePoints = getAASMAFramework().visibleHoshimies(this._nanoAI);
@@ -230,23 +233,16 @@ namespace AASMAHoshimi.Hybrid
                 {
                     if (!this.createdNeedles.Contains(p))
                     {
-                        emptyHoleInRange = true;
-                        break;
+						return true;
                     }
                 }
             }
 
-            if (emptyHoleInRange)
-            {
-                getAASMAFramework().logData(this._nanoAI, "Empty hole in range");
-            }
-
-			return (prevIntention != Intention.FLEE && enemieSpotted) || emptyHoleInRange;
+			return false;
 		}
 
 		private enum Intention {
-			MOVE_RANDOM, FLEE, MOVE_HOSHIMIE,
-			CREATE_PROTECTOR, CREATE_CONTAINER, CREATE_EXPLORER, CREATE_NEEDLE
+			MOVE_RANDOM, MOVE_HOSHIMIE, CREATE_PROTECTOR, CREATE_CONTAINER, CREATE_EXPLORER, CREATE_NEEDLE
 		}
 	}
 }
