@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
@@ -225,8 +226,6 @@ namespace AASMAHoshimi.Hybrid
 		 * - A hole is in the range and it's unoccupied
 		 */ 
 		private bool Reconsider(Intention prevIntention) {
-			bool emptyHoleInRange = false;
-
 			List<Point> hoshimiePoints = getAASMAFramework().visibleHoshimies(this._nanoAI);
             if (!hoshimiePoints.Contains(this.currentTarget))
             {
