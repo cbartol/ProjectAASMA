@@ -51,25 +51,28 @@ namespace AASMAHoshimi.Reactive
             else if (getAASMAFramework().explorersAlive() < 10)
             {
                 this._nanoAI.Build(typeof(ReactiveExplorer), "E"+this._explorerNumber++);
-            }
+			}
+			else if (getAASMAFramework().overHoshimiPoint(this._nanoAI) && (!getAASMAFramework().overNeedle(this._nanoAI)))
+			{
+				this._nanoAI.Build(typeof(ReactiveNeedle), "N" + this._needleNumber++);
+			}
             else if (!getAASMAFramework().overHoshimiPoint(this._nanoAI) || getAASMAFramework().overNeedle(this._nanoAI))
             {
                 List<System.Drawing.Point> visibleHoshimiesList = getAASMAFramework().visibleHoshimies(this._nanoAI);
+				foreach (Point p in getAASMAFramework().visibleEmptyNeedles(this._nanoAI)) {
+					visibleHoshimiesList.Remove (p);
+				}
+				foreach (Point p in getAASMAFramework().visibleFullNeedles(this._nanoAI)) {
+					visibleHoshimiesList.Remove (p);
+				}
+
                 if (visibleHoshimiesList.Count != 0)
                 {
                     System.Drawing.Point nearestHoshimi = Utils.getNearestPoint(this._nanoAI.Location, visibleHoshimiesList);
-                    if (!getAASMAFramework().visibleEmptyNeedles(this._nanoAI).Contains(nearestHoshimi) &&
-                        !getAASMAFramework().visibleFullNeedles(this._nanoAI).Contains(nearestHoshimi))
-                    {
-                        this._nanoAI.MoveTo(nearestHoshimi);
-                        return;
-                    }
+                    this._nanoAI.MoveTo(nearestHoshimi);
+                    return;
                 }
 				MoveToClearPosition(90);
-            }
-            else if (getAASMAFramework().overHoshimiPoint(this._nanoAI) && (!getAASMAFramework().overNeedle(this._nanoAI)))
-            {
-                this._nanoAI.Build(typeof(ReactiveNeedle), "N" + this._needleNumber++);
             }
         }
 
