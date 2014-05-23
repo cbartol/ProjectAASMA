@@ -9,23 +9,23 @@ namespace AASMAHoshimi
 		private AASMAAI ai;
 		private Type agentType;
 		private AgentCreatedDelegate onAgentCreated;
-		private int id;
+        private String username;
 
-		public CreateAgentAction (AASMAAI ai, Type agentType, int id) {
+		public CreateAgentAction (AASMAAI ai, Type agentType, String username) {
 			this.ai = ai;
 			this.agentType = agentType;
-			this.id = id;
+            this.username = username;
 		}
-		public CreateAgentAction (AASMAAI ai, Type agentType, AgentCreatedDelegate onAgentCreated, int id)
+		public CreateAgentAction (AASMAAI ai, Type agentType, AgentCreatedDelegate onAgentCreated, String username)
 		{
 			this.ai = ai;
 			this.agentType = agentType;
-			this.id = id;
+            this.username = username;
 			this.onAgentCreated = onAgentCreated;
 		}
 
 		public void execute() {
-			this.ai.getNanoBot().Build(agentType, agentType.ToString()[0] + id.ToString());
+			this.ai.getNanoBot().Build(agentType, username);
 			if (onAgentCreated != null) {
 				this.onAgentCreated (agentType);
 			}

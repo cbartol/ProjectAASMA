@@ -49,7 +49,7 @@ namespace AASMAHoshimi.Deliberative
 				}
 
 				updatePerceptions ();
-				if (Reconsider ()) {
+				if (Reconsider (this.intention)) {
 					action.cancel ();
 
 					// get desires
@@ -129,27 +129,27 @@ namespace AASMAHoshimi.Deliberative
 
 			switch (intention) {
 			case Intention.CREATE_CONTAINER:
-				plan.Add (new CreateAgentAction (this, typeof(DeliberativeContainer), this._containerNumber));
+				plan.Add (new CreateAgentAction (this, typeof(DeliberativeContainer), "C" + this._containerNumber));
 				this._containerNumber++;
 				break;
 
 			case Intention.CREATE_EXPLORER:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeExplorer), this._explorerNumber));
+				plan.Add(new CreateAgentAction(this, typeof(DeliberativeExplorer), "E" + this._explorerNumber));
 				this._explorerNumber++;
 				break;
 
 			case Intention.CREATE_PROTECTOR:
 				if (getAASMAFramework ().protectorsAlive () < 8) {
-					plan.Add (new CreateAgentAction (this, typeof(DeliberativeProtectorAI), this._protectorNumber));
+					plan.Add (new CreateAgentAction (this, typeof(DeliberativeProtectorAI), "PAI" + this._protectorNumber));
 				} else {
-					plan.Add (new CreateAgentAction (this, typeof(DeliberativeProtector), this._protectorNumber));
+					plan.Add (new CreateAgentAction (this, typeof(DeliberativeProtector), "P" + this._protectorNumber));
 				}
 				this._protectorNumber++;
 				break;
 
 			case Intention.CREATE_NEEDLE:
 				plan.Add (new CreateAgentAction (this, typeof(DeliberativeNeedle), 
-					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), this._needleNumber));
+					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), "N" + this._needleNumber));
 				this._needleNumber++;
 				break;
 
@@ -166,7 +166,7 @@ namespace AASMAHoshimi.Deliberative
 				}
 				plan.Add (new MoveAction (this._nanoAI, target));
 				plan.Add (new CreateAgentAction (this, typeof(DeliberativeNeedle), 
-					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), this._needleNumber));
+					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), "N" + this._needleNumber));
 				this._needleNumber++;
 				break;
 
@@ -187,8 +187,7 @@ namespace AASMAHoshimi.Deliberative
 				break;
 
 			case Intention.MOVE_RANDOM:
-				target = ClearPoint (80);
-				plan.Add (new MoveAction (this._nanoAI, target));
+				plan.Add (new MoveAction (this._nanoAI, Utils.randomValidPoint(getAASMAFramework().Tissue)));
 				break;
 			}
 			
@@ -209,7 +208,7 @@ namespace AASMAHoshimi.Deliberative
 		 * - Enemies are in the view range;
 		 * - A hole is in the range and it's unoccupied
 		 */ 
-		private bool Reconsider() {
+		private bool Reconsider(Intention prevIntention) {
 			bool enemieSpotted = getAASMAFramework ().visiblePierres (this._nanoAI).Count > 0;
 			bool emptyHoleInRange = false;
 
@@ -221,7 +220,7 @@ namespace AASMAHoshimi.Deliberative
 				}
 			}
 
-			return enemieSpotted || emptyHoleInRange;
+			return (prevIntention != Intention.FLEE && enemieSpotted) || (prevIntention != Intention.MOVE_EMPTY_NEEDLE && emptyHoleInRange);
 		}
 
 		private enum Intention {
