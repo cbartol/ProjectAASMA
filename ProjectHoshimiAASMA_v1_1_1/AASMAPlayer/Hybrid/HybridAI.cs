@@ -46,6 +46,7 @@ namespace AASMAHoshimi.Hybrid
 				Point target = Utils.getMiddlePoint (possibleMoves.ToArray ());
 				new MoveAction (this._nanoAI, target).execute ();
 				this.currentTarget = target;
+				return;
 			}
 				
 			if (plan.Count == 0) {
