@@ -131,7 +131,7 @@ namespace AASMAHoshimi.Deliberative {
         }
 
         private bool Reconsider() {
-            if(nearPierres.Count > 0){
+            if(intention != Intention.FLEE && nearPierres.Count > 0){
                 return true;
             }
             if (intention == Intention.MOVE_AROUND && pointsToVisit.Count > 0) {
