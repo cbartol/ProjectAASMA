@@ -18,6 +18,7 @@ namespace AASMAHoshimi.Communicative
 		private Intention intention;
         private Point currentTarget;
 		private bool canReconsider;
+		private Action currentAction;
 
         public CommunicativeAI(NanoAI nano)
 		{
@@ -33,39 +34,57 @@ namespace AASMAHoshimi.Communicative
                 // get perceptions
                 updatePerceptions();
 
-                if (plan.Count == 0) {
-                    // get desires
-                    Intention[] desires = Options();
+				if (this.viewedEnemies.Count > 0) {
+					// cancel current action and forget the plan
+					if (this.plan.Count > 0) {
+						this.currentAction.cancel ();
+						this.plan.Clear ();
+					}
 
-                    // get intention based on the desires and the previous intention
-                    this.intention = Filter(desires, this.intention);
+					// Run away in the opposite direction
+					List<Point> possibleMoves = new List<Point> ();
+					foreach (Point enemy in this.viewedEnemies) {
+						possibleMoves.Add (Utils.oppositDirection (this._nanoAI.Location, enemy, getAASMAFramework ().Tissue));
+					}
+					Point target = Utils.getMiddlePoint (possibleMoves.ToArray ());
+					new MoveAction (this._nanoAI, target).execute ();
+					this.currentTarget = target;
+					return;
+				}
 
-                    this.plan = Plan(this.intention);
-                }
+				if (plan.Count == 0) {
+					// get desires
+					Intention[] desires = Options ();
 
-                if (plan.Count > 0) {
-                    // Continue with the same plan
+					// get intention based on the desires and the previous intention
+					this.intention = Filter (desires, this.intention);
 
-                    Action action = this.plan[0];
-                    // Only remove action when it has finished
-                    if (this._nanoAI.State == NanoBotState.WaitingOrders) {
-                        action.execute();
-                        this.plan.RemoveAt(0);
-                    }
+					this.plan = Plan (this.intention);
+				}
 
-                    updatePerceptions();
-                    if (this.canReconsider && Reconsider(this.intention)) {
-                        action.cancel();
+				if (plan.Count > 0) {
+					// Continue with the same plan
 
-                        // get desires
-                        Intention[] desires = Options();
+					this.currentAction = this.plan [0];
+					// Only remove action when it has finished
+					if (this._nanoAI.State == NanoBotState.WaitingOrders) {
+						this.currentAction.execute ();
+						this.plan.RemoveAt (0);
+					}
 
-                        // get intention based on the desires and the previous intention
-                        this.intention = Filter(desires, this.intention);
+					updatePerceptions ();
+					if (this.canReconsider && Reconsider (this.intention)) {
+						this.currentAction.cancel ();
 
-                        this.plan = Plan(this.intention);
-                    }
-                }
+						// get desires
+						Intention[] desires = Options ();
+
+						// get intention based on the desires and the previous intention
+						this.intention = Filter (desires, this.intention);
+
+						this.plan = Plan (this.intention);
+					}
+				}
             } catch (Exception e) {
                 getAASMAFramework().logData(this._nanoAI, e.Message);
                 getAASMAFramework().logData(this._nanoAI, e.StackTrace);
@@ -75,26 +94,26 @@ namespace AASMAHoshimi.Communicative
 		private void updatePerceptions() {
 			// update list of viewed hoshimies
 			List<Point> visibleEmptyHoshimies = getAASMAFramework ().visibleHoshimies (this._nanoAI);
-            foreach (Point emptyNeedle in getAASMAFramework().visibleEmptyNeedles(this._nanoAI))
-            {
-                visibleEmptyHoshimies.Remove(emptyNeedle);
-            }
+			foreach (Point emptyNeedle in getAASMAFramework().visibleEmptyNeedles(this._nanoAI))
+			{
+				visibleEmptyHoshimies.Remove(emptyNeedle);
+			}
 
-            foreach (Point fullNeedle in getAASMAFramework().visibleFullNeedles(this._nanoAI))
-            {
-                visibleEmptyHoshimies.Remove(fullNeedle);
-            }
+			foreach (Point fullNeedle in getAASMAFramework().visibleFullNeedles(this._nanoAI))
+			{
+				visibleEmptyHoshimies.Remove(fullNeedle);
+			}
 
 			foreach (Point p in visibleEmptyHoshimies) {
 				if (!this.viewedHoshimies.Contains(p)) {
 					this.viewedHoshimies.Add (p);
 				}
 
-                // Needle was destroyed
-                if (this.createdNeedles.Contains(p))
-                {
-                    this.createdNeedles.Remove(p);
-                }
+				// Needle was destroyed
+				if (this.createdNeedles.Contains(p))
+				{
+					this.createdNeedles.Remove(p);
+				}
 			}
 
 			// update list of viewed enemies
@@ -135,10 +154,6 @@ namespace AASMAHoshimi.Communicative
 		}
 			
 		private Intention Filter(Intention[] desires, Intention prevIntention) {
-			if (this.viewedEnemies.Count != 0) {
-				return Intention.FLEE;
-			}
-
 			if (getAASMAFramework ().protectorsAlive () < 10) {
 				return Intention.CREATE_PROTECTOR;
 			} 
@@ -150,12 +165,12 @@ namespace AASMAHoshimi.Communicative
 			if (getAASMAFramework ().explorersAlive () < 10) {
 				return Intention.CREATE_EXPLORER;
 			}
-			    
+
 			if (getAASMAFramework ().overHoshimiPoint (this._nanoAI) && 
 				(!getAASMAFramework ().overNeedle (this._nanoAI))) {
 				return Intention.CREATE_NEEDLE;
 			}
-				
+
 			// If there's still an empty hole, go to there
 			if (this.viewedHoshimies.Count > 0) {
 				return Intention.MOVE_HOSHIMIE;
@@ -168,30 +183,30 @@ namespace AASMAHoshimi.Communicative
 			List<Action> plan = new List<Action> ();
 			Point target = Point.Empty;
 
-            this.canReconsider = false;
+			this.canReconsider = false;
 
 			switch (intention) {
 			case Intention.CREATE_CONTAINER:
-                    plan.Add(new CreateAgentAction(this, typeof(CommunicativeContainer), "C" + this._containerNumber));
+				plan.Add (new CreateAgentAction (this, typeof(CommunicativeContainer), "C" + this._containerNumber));
 				this._containerNumber++;
 				break;
 
 			case Intention.CREATE_EXPLORER:
-                plan.Add(new CreateAgentAction(this, typeof(CommunicativeExplorer), "E" + this._explorerNumber));
+				plan.Add(new CreateAgentAction(this, typeof(CommunicativeExplorer), "E" + this._explorerNumber));
 				this._explorerNumber++;
 				break;
 
 			case Intention.CREATE_PROTECTOR:
 				if (getAASMAFramework ().protectorsAlive () < 8) {
-                    plan.Add(new CreateAgentAction(this, typeof(CommunicativeProtectorAI), "PAI" + this._protectorNumber));
+					plan.Add (new CreateAgentAction (this, typeof(CommunicativeProtectorAI), "PAI" + this._protectorNumber));
 				} else {
-                    plan.Add(new CreateAgentAction(this, typeof(CommunicativeProtector), "P" + this._protectorNumber));
+					plan.Add (new CreateAgentAction (this, typeof(CommunicativeProtector), "P" + this._protectorNumber));
 				}
 				this._protectorNumber++;
 				break;
 
 			case Intention.CREATE_NEEDLE:
-                plan.Add(new CreateAgentAction(this, typeof(CommunicativeNeedle), 
+				plan.Add (new CreateAgentAction (this, typeof(CommunicativeNeedle), 
 					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), "N" + this._needleNumber));
 				this._needleNumber++;
 				break;
@@ -208,31 +223,21 @@ namespace AASMAHoshimi.Communicative
 					}
 				}
 				plan.Add (new MoveAction (this._nanoAI, target));
-                plan.Add(new CreateAgentAction(this, typeof(CommunicativeNeedle), 
+				plan.Add (new CreateAgentAction (this, typeof(CommunicativeNeedle), 
 					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), "N" + this._needleNumber));
 				this._needleNumber++;
-                this.currentTarget = target;
-                this.canReconsider = true;
-				break;
-
-			case Intention.FLEE:
-				List<Point> possibleMoves = new List<Point> ();
-				foreach (Point enemy in this.viewedEnemies) {
-					possibleMoves.Add (Utils.oppositDirection (this._nanoAI.Location, enemy, getAASMAFramework ().Tissue));
-				}
-				target = Utils.getMiddlePoint (possibleMoves.ToArray ());
-				plan.Add(new MoveAction(this._nanoAI, target));
-                this.currentTarget = target;
+				this.currentTarget = target;
+				this.canReconsider = true;
 				break;
 
 			case Intention.MOVE_RANDOM:
 				plan.Add (new MoveAction (this._nanoAI, Utils.randomValidPoint(getAASMAFramework().Tissue)));
-                this.currentTarget = target;
-                this.canReconsider = true;
+				this.currentTarget = target;
+				this.canReconsider = true;
 				break;
 			}
-			
-            getAASMAFramework().logData(this._nanoAI, "Current intention: " + Enum.GetName(typeof(Intention), intention));
+
+			getAASMAFramework().logData(this._nanoAI, "Current intention: " + Enum.GetName(typeof(Intention), intention));
 			return plan;
 		} 
 
@@ -251,28 +256,19 @@ namespace AASMAHoshimi.Communicative
 		 * - A hole is in the range and it's unoccupied
 		 */ 
 		private bool Reconsider(Intention prevIntention) {
-			bool enemieSpotted = getAASMAFramework ().visiblePierres (this._nanoAI).Count > 0;
-			bool emptyHoleInRange = false;
-
 			List<Point> hoshimiePoints = getAASMAFramework().visibleHoshimies(this._nanoAI);
-            if (!hoshimiePoints.Contains(this.currentTarget))
-            {
-                foreach (Point p in hoshimiePoints)
-                {
-                    if (!this.createdNeedles.Contains(p))
-                    {
-                        emptyHoleInRange = true;
-                        break;
-                    }
-                }
-            }
+			if (!hoshimiePoints.Contains(this.currentTarget))
+			{
+				foreach (Point p in hoshimiePoints)
+				{
+					if (!this.createdNeedles.Contains(p))
+					{
+						return true;
+					}
+				}
+			}
 
-            if (emptyHoleInRange)
-            {
-                getAASMAFramework().logData(this._nanoAI, "Empty hole in range");
-            }
-
-			return (prevIntention != Intention.FLEE && enemieSpotted) || emptyHoleInRange;
+			return false;
 		}
 
 		private enum Intention {
