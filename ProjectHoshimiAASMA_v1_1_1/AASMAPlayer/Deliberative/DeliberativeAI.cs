@@ -129,20 +129,28 @@ namespace AASMAHoshimi.Deliberative
 
 			switch (intention) {
 			case Intention.CREATE_CONTAINER:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeContainer)));
+				plan.Add (new CreateAgentAction (this, typeof(DeliberativeContainer), this._containerNumber));
+				this._containerNumber++;
 				break;
 
 			case Intention.CREATE_EXPLORER:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeExplorer)));
+				plan.Add(new CreateAgentAction(this, typeof(DeliberativeExplorer), this._explorerNumber));
+				this._explorerNumber++;
 				break;
 
 			case Intention.CREATE_PROTECTOR:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeProtector)));
+				if (getAASMAFramework ().protectorsAlive () < 8) {
+					plan.Add (new CreateAgentAction (this, typeof(DeliberativeProtectorAI), this._protectorNumber));
+				} else {
+					plan.Add (new CreateAgentAction (this, typeof(DeliberativeProtector), this._protectorNumber));
+				}
+				this._protectorNumber++;
 				break;
 
 			case Intention.CREATE_NEEDLE:
-				plan.Add(new CreateAgentAction(this, typeof(DeliberativeNeedle), 
-					new CreateAgentAction.AgentCreatedDelegate(this.onAgentCreated)));
+				plan.Add (new CreateAgentAction (this, typeof(DeliberativeNeedle), 
+					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), this._needleNumber));
+				this._needleNumber++;
 				break;
 
 			case Intention.MOVE_EMPTY_NEEDLE:
@@ -157,7 +165,9 @@ namespace AASMAHoshimi.Deliberative
 					}
 				}
 				plan.Add (new MoveAction (this._nanoAI, target));
-				plan.Add (new CreateAgentAction (this, typeof(DeliberativeNeedle)));
+				plan.Add (new CreateAgentAction (this, typeof(DeliberativeNeedle), 
+					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), this._needleNumber));
+				this._needleNumber++;
 				break;
 
 			case Intention.FLEE:

@@ -133,20 +133,28 @@ namespace AASMAHoshimi.Hybrid
 
 			switch (intention) {
 			case Intention.CREATE_CONTAINER:
-				plan.Add(new CreateAgentAction(this, typeof(HybridContainer)));
+				plan.Add (new CreateAgentAction (this, typeof(HybridContainer), this._containerNumber));
+				this._containerNumber++;
 				break;
 
 			case Intention.CREATE_EXPLORER:
-				plan.Add(new CreateAgentAction(this, typeof(HybridExplorer)));
+				plan.Add (new CreateAgentAction (this, typeof(HybridExplorer), this._explorerNumber));
+				this._explorerNumber++;
 				break;
 
 			case Intention.CREATE_PROTECTOR:
-				plan.Add(new CreateAgentAction(this, typeof(HybridProtector)));
+				if (getAASMAFramework ().protectorsAlive () < 8) {
+					plan.Add (new CreateAgentAction (this, typeof(HybridProtectorAI), this._protectorNumber));
+				} else {
+					plan.Add (new CreateAgentAction (this, typeof(HybridProtector), this._protectorNumber));
+				}
+				this._protectorNumber++;
 				break;
 
 			case Intention.CREATE_NEEDLE:
-				plan.Add(new CreateAgentAction(this, typeof(HybridNeedle), 
-					new CreateAgentAction.AgentCreatedDelegate(this.onAgentCreated)));
+				plan.Add (new CreateAgentAction (this, typeof(HybridNeedle), 
+					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), this._needleNumber));
+				this._needleNumber++;
 				break;
 
 			case Intention.MOVE_EMPTY_NEEDLE:
@@ -161,7 +169,9 @@ namespace AASMAHoshimi.Hybrid
 					}
 				}
 				plan.Add (new MoveAction (this._nanoAI, target));
-				plan.Add (new CreateAgentAction (this, typeof(HybridNeedle)));
+				plan.Add (new CreateAgentAction (this, typeof(HybridNeedle), 
+					new CreateAgentAction.AgentCreatedDelegate (this.onAgentCreated), this._needleNumber));
+				this._needleNumber++;
 				this.canReconsider = true;
 				break;
 
