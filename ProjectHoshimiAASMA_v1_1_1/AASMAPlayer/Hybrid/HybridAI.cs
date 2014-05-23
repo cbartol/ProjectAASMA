@@ -44,14 +44,14 @@ namespace AASMAHoshimi.Hybrid
 				// Continue with the same plan
 
 				Action action = this.plan [0];
-				action.execute ();
 				// Only remove action when it has finished
 				if (this._nanoAI.State == NanoBotState.WaitingOrders) {
+					action.execute ();
 					this.plan.RemoveAt (0);
 				}
 
 				updatePerceptions ();
-				if (Reconsider ()) {
+				if (this.canReconsider && Reconsider ()) {
 					action.cancel ();
 
 					// get desires
