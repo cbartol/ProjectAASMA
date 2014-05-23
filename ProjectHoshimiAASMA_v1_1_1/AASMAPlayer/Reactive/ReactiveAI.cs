@@ -46,7 +46,7 @@ namespace AASMAHoshimi.Reactive
             }
             else if (getAASMAFramework().containersAlive() < 10)
             {
-                this._nanoAI.Build(typeof(ReactiveCollector), "C"+this._containerNumber++);
+                this._nanoAI.Build(typeof(ReactiveContainer), "C"+this._containerNumber++);
             }
             else if (getAASMAFramework().explorersAlive() < 10)
             {

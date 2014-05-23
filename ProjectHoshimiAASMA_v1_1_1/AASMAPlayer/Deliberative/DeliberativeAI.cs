@@ -125,7 +125,7 @@ namespace AASMAHoshimi.Deliberative
 
 		private List<Action> Plan(Intention intention) {
 			List<Action> plan = new List<Action> ();
-			Point target;
+			Point target = null;
 
 			switch (intention) {
 			case Intention.CREATE_CONTAINER:

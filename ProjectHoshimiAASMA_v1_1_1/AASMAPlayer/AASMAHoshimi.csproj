@@ -47,11 +47,16 @@
   <ItemGroup>
     <Compile Include="AASMAMessage.cs" />
     <Compile Include="AASMAPlayer.cs" />
+    <Compile Include="Action\DefendAction.cs" />
     <Compile Include="Action\VisitObjective.cs" />
+    <Compile Include="Action\CollectAction.cs" />
+    <Compile Include="Action\TransferAction.cs" />
     <Compile Include="Communicative\CommunicativeExplorer.cs" />
     <Compile Include="Deliberative\DeliberativeContainer.cs" />
     <Compile Include="Communicative\CommunicativeNeedle.cs" />
     <Compile Include="Deliberative\DeliberativeExplorer.cs" />
+    <Compile Include="Deliberative\DeliberativeProtectorAI.cs" />
+    <Compile Include="Deliberative\DeliberativeProtector.cs" />
     <Compile Include="Examples\BuildingAI.cs" />
     <Compile Include="Examples\CommunicativeExplorer.cs" />
     <Compile Include="Examples\PassiveContainer.cs" />

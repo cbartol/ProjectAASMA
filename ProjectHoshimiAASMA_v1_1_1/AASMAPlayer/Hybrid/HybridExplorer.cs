@@ -8,65 +8,66 @@ using PH.Mission;
 namespace AASMAHoshimi.Hybrid {
     [Characteristics(ContainerCapacity = 0, CollectTransfertSpeed = 0, Scan = 30, MaxDamage = 0, DefenseDistance = 0, Constitution = 10)]
     public class HybridExplorer : AASMAExplorer {
-        private List<Point> visitedPositions = new List<Point>();
-        private List<Point> pointsToVisit = new List<Point>();
+        // perceptions
+        private List<Point> nearPierres = new List<Point>();
+        // end perceptions
+
+        private List<Action> plan = new List<Action>();
+        private Intention intention;
+
+        private Dictionary<Point, Boolean> visitedPositions = new Dictionary<Point,Boolean>();
+        private Dictionary<Point, Boolean> pointsToVisit = new Dictionary<Point,Boolean>();
 
         private Point exploringPoint = Point.Empty;
-        public HybridExplorer() {
-
-        }
 
         public override void DoActions() {
-            if (exploringPoint == this.Location) {
-                visitedPositions.Add(exploringPoint);
-            }
-
             // get perceptions
-            List<Point> visibleObjectives = getAASMAFramework().visibleNavigationPoints(this);
-            List<Point> nearPierres = getAASMAFramework().visiblePierres(this);
+            updatePerceptions();
 
-            // reactive action ||| avoid enemies
             if (nearPierres.Count > 0) {
+                plan = new List<Action>();
                 this.StopMoving();
                 this.MoveTo(flee(nearPierres));
                 return;
             }
 
-            addObjectivesToVisit(visibleObjectives);
-            // get Desires
-            Desire desire = getDesire();
-            // get Intentions
-            Point intention = getIntention(desire);
-            // do a plan
-            // the plan is move the position returned from getting the intention
+            if (plan.Count == 0) {
+                // get desires
+                Intention[] desires = Options();
 
-            // execute the plan
-            this.MoveTo(intention);
-        }
+                // get intention based on the desires and the previous intention
+                this.intention = Filter(desires, this.intention);
 
-        private Desire getDesire() {
-            if (pointsToVisit.Count > 0) {
-                return Desire.EXPLORE;
+                this.plan = Plan(this.intention);
             }
-            return Desire.MOVE_AROUND;
-        }
 
-        private Point getIntention(Desire desire) {
-            switch (desire) {
-                case Desire.EXPLORE:
-                    exploringPoint = Utils.randomPoint(pointsToVisit);
-                    pointsToVisit.Remove(exploringPoint);
-                    return exploringPoint;
-                case Desire.MOVE_AROUND:
-                default:
-                    return Utils.randomValidPoint(this.getAASMAFramework().Tissue);
+            if (plan.Count > 0) {
+                // Continue with the same plan
+                Action action = this.plan[0];
+                if (this.State == NanoBotState.WaitingOrders) {
+                    action.execute();
+                    this.plan.RemoveAt(0);
+                }
+
+                updatePerceptions();
+                if (Reconsider()) {
+                    action.cancel();
+
+                    // get desires
+                    Intention[] desires = Options();
+
+                    // get intention based on the desires and the previous intention
+                    this.intention = Filter(desires, this.intention);
+
+                    this.plan = Plan(this.intention);
+                }
             }
         }
 
-        private void addObjectivesToVisit(List<Point> visibleObjectives) {
-            foreach (Point p in visibleObjectives) {
-                if (!pointsToVisit.Contains(p) && !visitedPositions.Contains(p)) {
-                    pointsToVisit.Add(p);
+        private void addObjectivesToVisit(List<Point> visibleObjectives){
+            foreach(Point p in visibleObjectives){
+                if (!pointsToVisit.ContainsKey(p) && !visitedPositions.ContainsKey(p)) {
+                    pointsToVisit.Add(p,true);
                 }
             }
         }
@@ -82,10 +83,59 @@ namespace AASMAHoshimi.Hybrid {
             }
             return Utils.getMiddlePoint(possibleMoves.ToArray());
         }
-    }
 
-    enum Desire {
-        MOVE_AROUND,
-        EXPLORE
+
+        // from here all new
+        private void updatePerceptions() {
+            addObjectivesToVisit(getAASMAFramework().visibleNavigationPoints(this));
+            nearPierres = getAASMAFramework().visiblePierres(this);
+        }
+        private static Intention[] Options() {
+            return (Intention[])Enum.GetValues(typeof(Intention));
+        }
+
+        private Intention Filter(Intention[] desires, Intention prevIntention) {
+            if (pointsToVisit.Count > 0) {
+                return Intention.EXPLORE;
+            }
+            return Intention.MOVE_AROUND;
+        }
+
+        private List<Action> Plan(Intention intention) {
+            List<Action> plan = new List<Action>();
+            Point target;
+            switch (intention) {
+                case Intention.EXPLORE:
+                    List<Point> possibilities = new List<Point>();
+                    foreach(KeyValuePair<Point, Boolean> point in pointsToVisit){
+                        possibilities.Add(point.Key);
+                    }
+                    target = Utils.randomPoint(possibilities);
+                    plan.Add(new MoveAction(this, target));
+                    plan.Add(new VisitObjective(visitPoint, target));
+                    break;
+                case Intention.MOVE_AROUND:
+                    plan.Add(new MoveAction(this, Utils.randomValidPoint(this.getAASMAFramework().Tissue)));
+                    break;
+            }
+            return plan;
+        }
+
+        private void visitPoint(Point p) {
+            pointsToVisit.Remove(p);
+            visitedPositions.Add(p, true);
+        }
+
+        private bool Reconsider() {
+            if (intention == Intention.MOVE_AROUND && pointsToVisit.Count > 0) {
+                return true;
+            }
+            return false;
+        }
+
+        private enum Intention {
+            MOVE_AROUND,
+            EXPLORE
+        }
     }
 }

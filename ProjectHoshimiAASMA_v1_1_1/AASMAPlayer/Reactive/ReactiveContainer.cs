@@ -8,7 +8,7 @@ using PH.Common;
 namespace AASMAHoshimi.Reactive
 {
     [Characteristics(ContainerCapacity = 20, CollectTransfertSpeed = 5, Scan = 0, MaxDamage = 0, DefenseDistance = 0, Constitution = 20)]
-    public class ReactiveCollector : AASMAContainer
+    public class ReactiveContainer : AASMAContainer
     {
         private void flee(List<Point> enemies)
         {
