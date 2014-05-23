@@ -18,6 +18,7 @@ namespace AASMAHoshimi.Communicative
 		private Intention intention;
         private Point currentTarget;
 		private bool canReconsider;
+        private bool newHoshimies = false;
 		private Action currentAction;
 
         public CommunicativeAI(NanoAI nano)
@@ -124,10 +125,13 @@ namespace AASMAHoshimi.Communicative
 		{
             try {
                 string[] content = msg.Content.Split(';');
-                if (content.Length == 2 && content[0].Equals("AZN")) {
+                if (content.Length == 2 && content[0].Equals("Hoshimi")) {
                     foreach (Point p in Utils.deserializePoints(content[1])) {
-                        if (!viewedHoshimies.Contains(p) && !createdNeedles.Contains(p))
+                        if (!viewedHoshimies.Contains(p) && !createdNeedles.Contains(p)) {
                             viewedHoshimies.Add(p);
+                            canReconsider = true;
+                            newHoshimies = true;
+                        }
                     }
                 }
                 if (content.Length == 3 && content[0].Equals("Visited objective")) {
@@ -267,6 +271,10 @@ namespace AASMAHoshimi.Communicative
 					}
 				}
 			}
+            if (newHoshimies) {
+                newHoshimies = false;
+                return true;
+            }
 
 			return false;
 		}
